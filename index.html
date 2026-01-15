@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>余若峰 | 国防科技大学 | 智能感知与处理</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #0d1321;
+            --bg-card: rgba(13, 25, 45, 0.85);
+            --accent-cyan: #00d4ff;
+            --accent-green: #00ff9d;
+            --accent-blue: #4a90d9;
+            --accent-purple: #a855f7;
+            --accent-orange: #f97316;
+            --text-primary: #e8f4f8;
+            --text-secondary: #8ba4b4;
+            --text-dim: #5a7080;
+            --border-glow: rgba(0, 212, 255, 0.3);
+            --gradient-tech: linear-gradient(135deg, #00d4ff 0%, #00ff9d 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans SC', 'Rajdhani', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.8; overflow-x: hidden; }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.01) 2px, rgba(0, 212, 255, 0.01) 4px); pointer-events: none; z-index: 1000; }
+        nav { position: fixed; top: 0; left: 0; width: 100%; padding: 1rem 2rem; background: rgba(10, 14, 23, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-glow); z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 3px; }
+        .nav-logo::before { content: "◈ "; animation: pulse 2s infinite; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 500; font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--gradient-tech); transition: width 0.3s ease; }
+        .nav-links a:hover { color: var(--accent-cyan); }
+        .nav-links a:hover::after { width: 100%; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 6rem 2rem 4rem; }
+        .hero-content { display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; max-width: 1200px; width: 100%; position: relative; z-index: 10; }
+        .radar-container { position: relative; display: flex; align-items: center; justify-content: center; }
+        .radar { width: 320px; height: 320px; border-radius: 50%; border: 2px solid var(--accent-cyan); position: relative; background: radial-gradient(circle, rgba(0, 212, 255, 0.05) 0%, transparent 70%); box-shadow: 0 0 60px rgba(0, 212, 255, 0.2), inset 0 0 60px rgba(0, 212, 255, 0.1); }
+        .radar::before, .radar::after { content: ''; position: absolute; border-radius: 50%; border: 1px solid rgba(0, 212, 255, 0.3); }
+        .radar::before { width: 66%; height: 66%; top: 17%; left: 17%; }
+        .radar::after { width: 33%; height: 33%; top: 33.5%; left: 33.5%; }
+        .radar-line { position: absolute; top: 50%; left: 50%; width: 50%; height: 2px; background: linear-gradient(90deg, var(--accent-cyan), transparent); transform-origin: left center; animation: radarScan 4s linear infinite; box-shadow: 0 0 20px var(--accent-cyan); }
+        .radar-sweep { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 212, 255, 0.15) 30deg, transparent 60deg); animation: radarScan 4s linear infinite; }
+        .radar-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .radar-crosshair::before, .radar-crosshair::after { content: ''; position: absolute; background: var(--accent-cyan); }
+        .radar-crosshair::before { width: 100px; height: 1px; left: -50px; top: 0; }
+        .radar-crosshair::after { width: 1px; height: 100px; top: -50px; left: 0; }
+        .radar-dot { position: absolute; width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: blink 1.5s ease-in-out infinite; }
+        .radar-dot:nth-child(1) { top: 25%; left: 60%; animation-delay: 0s; }
+        .radar-dot:nth-child(2) { top: 40%; left: 75%; animation-delay: 0.5s; }
+        .radar-dot:nth-child(3) { top: 65%; left: 55%; animation-delay: 1s; }
+        @keyframes radarScan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes blink { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .hero-info { display: flex; flex-direction: column; justify-content: center; }
+        .hero-subtitle { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--accent-cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .hero-subtitle::before { content: ''; width: 30px; height: 2px; background: var(--accent-cyan); }
+        .hero-name { font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 800; background: var(--gradient-tech); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem; line-height: 1.2; }
+        .hero-title { font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 1.5rem; font-weight: 300; }
+        .hero-affiliation { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: var(--text-dim); margin-bottom: 2rem; padding-left: 1rem; border-left: 3px solid var(--accent-blue); }
+        .hero-research { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 2rem; }
+        .research-tag { padding: 0.5rem 1rem; background: rgba(0, 212, 255, 0.1); border: 1px solid var(--border-glow); border-radius: 4px; font-size: 0.85rem; color: var(--accent-cyan); font-family: 'Rajdhani', sans-serif; font-weight: 500; letter-spacing: 1px; }
+        .hero-contact { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .contact-item { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; transition: color 0.3s ease; }
+        .contact-item:hover { color: var(--accent-cyan); }
+        .contact-icon { width: 18px; height: 18px; fill: currentColor; }
+        section { padding: 5rem 2rem; position: relative; z-index: 10; }
+        .section-container { max-width: 1000px; margin: 0 auto; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
+        .section-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(0, 212, 255, 0.1); border: 1px solid var(--border-glow); border-radius: 8px; }
+        .section-icon svg { width: 28px; height: 28px; stroke: var(--accent-cyan); fill: none; stroke-width: 1.5; }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 600; color: var(--text-primary); letter-spacing: 2px; }
+        .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-glow), transparent); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 12px; padding: 1.5rem; text-align: center; position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--gradient-tech); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 212, 255, 0.15); }
+        .stat-number { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; font-weight: 700; background: var(--gradient-tech); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; }
+        .stat-label { font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; }
+        .stat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        #education { background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.02), transparent); }
+        .timeline { position: relative; padding-left: 2rem; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue), var(--accent-green)); }
+        .timeline-item { position: relative; padding: 1.5rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 8px; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .timeline-item:hover { transform: translateX(10px); border-color: var(--accent-cyan); box-shadow: 0 0 30px rgba(0, 212, 255, 0.1); }
+        .timeline-item::before { content: ''; position: absolute; left: -2.35rem; top: 2rem; width: 12px; height: 12px; background: var(--accent-cyan); border-radius: 50%; box-shadow: 0 0 15px var(--accent-cyan); }
+        .timeline-date { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--accent-cyan); margin-bottom: 0.5rem; letter-spacing: 1px; }
+        .timeline-school { font-size: 1.3rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.3rem; }
+        .timeline-degree { color: var(--text-secondary); font-size: 1rem; }
+        .timeline-detail { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem; }
+        .project-grid { display: grid; gap: 1.5rem; }
+        .project-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 10px; padding: 2rem; position: relative; overflow: hidden; transition: all 0.4s ease; }
+        .project-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--gradient-tech); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1); }
+        .project-card:hover::before { transform: scaleX(1); }
+        .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .project-title { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
+        .project-role { font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; padding: 0.3rem 0.8rem; background: rgba(0, 255, 157, 0.1); border: 1px solid rgba(0, 255, 157, 0.3); border-radius: 4px; color: var(--accent-green); font-weight: 600; letter-spacing: 1px; }
+        .project-date { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 1rem; letter-spacing: 1px; }
+        .project-content { color: var(--text-secondary); font-size: 0.95rem; }
+        .project-content li { margin-bottom: 0.8rem; padding-left: 1.5rem; position: relative; }
+        .project-content li::before { content: '▹'; position: absolute; left: 0; color: var(--accent-cyan); }
+        #publications { background: linear-gradient(180deg, transparent, rgba(0, 255, 157, 0.02), transparent); }
+        .pub-category { margin-bottom: 2.5rem; }
+        .pub-category-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--accent-green); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; letter-spacing: 2px; }
+        .pub-category-title::before { content: '◆'; font-size: 0.6rem; }
+        .pub-category-count { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 0.2rem 0.6rem; background: rgba(0, 255, 157, 0.15); border-radius: 10px; color: var(--accent-green); }
+        .pub-item { padding: 1.5rem; margin-bottom: 1rem; background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 8px; transition: all 0.3s ease; }
+        .pub-item:hover { background: rgba(74, 144, 217, 0.08); border-color: var(--accent-cyan); transform: translateX(5px); }
+        .pub-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; gap: 1rem; }
+        .pub-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.5; }
+        .pub-badges { display: flex; gap: 0.5rem; flex-shrink: 0; }
+        .pub-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .pub-badge.sci { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.4); }
+        .pub-badge.ei { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); border: 1px solid rgba(249, 115, 22, 0.4); }
+        .pub-badge.hot { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
+        .pub-badge.new { background: rgba(0, 255, 157, 0.2); color: var(--accent-green); border: 1px solid rgba(0, 255, 157, 0.4); }
+        .pub-meta { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem; }
+        .pub-authors { color: var(--text-secondary); font-size: 0.9rem; }
+        .pub-authors strong { color: var(--accent-cyan); }
+        .pub-venue { font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; color: var(--text-dim); font-style: italic; }
+        .pub-year { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--accent-blue); padding: 0.2rem 0.5rem; background: rgba(74, 144, 217, 0.1); border-radius: 4px; }
+        .pub-links { display: flex; gap: 0.8rem; margin-top: 0.8rem; }
+        .pub-link { font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; color: var(--accent-cyan); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; transition: color 0.3s ease; }
+        .pub-link:hover { color: var(--accent-green); }
+        .pub-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .awards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        .award-item { padding: 1.2rem; background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 8px; display: flex; align-items: center; gap: 1rem; transition: all 0.3s ease; }
+        .award-item:hover { border-color: var(--accent-green); box-shadow: 0 0 20px rgba(0, 255, 157, 0.1); }
+        .award-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(0, 255, 157, 0.1); border-radius: 50%; font-size: 1.2rem; }
+        .award-content { flex: 1; }
+        .award-year { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--accent-green); letter-spacing: 1px; }
+        .award-text { color: var(--text-secondary); font-size: 0.9rem; }
+        #skills { background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.02), transparent); }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .skill-card { padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 8px; }
+        .skill-title { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: var(--accent-cyan); margin-bottom: 1rem; font-weight: 600; letter-spacing: 1px; }
+        .skill-list { color: var(--text-secondary); font-size: 0.9rem; }
+        .skill-list li { margin-bottom: 0.5rem; padding-left: 1.2rem; position: relative; }
+        .skill-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent-green); }
+        footer { padding: 3rem 2rem; background: var(--bg-secondary); border-top: 1px solid var(--border-glow); text-align: center; position: relative; z-index: 10; }
+        .footer-content { max-width: 600px; margin: 0 auto; }
+        .footer-name { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--accent-cyan); margin-bottom: 1rem; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1.5rem; }
+        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; }
+        .footer-links a:hover { color: var(--accent-cyan); }
+        .footer-copyright { color: var(--text-dim); font-size: 0.8rem; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; }
+        .waveform { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 5; overflow: hidden; opacity: 0.3; }
+        .waveform svg { width: 200%; height: 100%; animation: waveMove 8s linear infinite; }
+        @keyframes waveMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @media (max-width: 900px) { .hero-content { grid-template-columns: 1fr; text-align: center; } .radar-container { order: -1; } .radar { width: 250px; height: 250px; } .hero-name { font-size: 2.5rem; } .hero-subtitle::before { display: none; } .hero-affiliation { border-left: none; padding-left: 0; border-top: 3px solid var(--accent-blue); padding-top: 1rem; } .hero-research { justify-content: center; } .hero-contact { justify-content: center; } .nav-links { display: none; } .pub-item-header { flex-direction: column; } .pub-badges { align-self: flex-start; } }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .scholar-link { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.8rem 1.5rem; background: rgba(0, 212, 255, 0.1); border: 1px solid var(--border-glow); border-radius: 8px; color: var(--accent-cyan); text-decoration: none; font-family: 'Rajdhani', sans-serif; font-weight: 500; letter-spacing: 1px; transition: all 0.3s ease; }
+        .scholar-link:hover { background: rgba(0, 212, 255, 0.2); transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2); }
+        .scholar-link svg { width: 20px; height: 20px; }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    <canvas id="particles-canvas"></canvas>
+    <nav>
+        <div class="nav-logo">Yu Ruofeng</div>
+        <ul class="nav-links">
+            <li><a href="#about">关于</a></li>
+            <li><a href="#education">教育</a></li>
+            <li><a href="#publications">学术</a></li>
+            <li><a href="#projects">项目</a></li>
+            <li><a href="#awards">荣誉</a></li>
+            <li><a href="#skills">技能</a></li>
+        </ul>
+    </nav>
+    <section class="hero" id="about">
+        <div class="hero-content">
+            <div class="radar-container">
+                <div class="radar">
+                    <div class="radar-sweep"></div>
+                    <div class="radar-line"></div>
+                    <div class="radar-crosshair"></div>
+                    <div class="radar-dot"></div>
+                    <div class="radar-dot"></div>
+                    <div class="radar-dot"></div>
+                </div>
+            </div>
+            <div class="hero-info">
+                <div class="hero-subtitle">Ph.D. Candidate</div>
+                <h1 class="hero-name">余若峰</h1>
+                <p class="hero-title">智能感知与处理研究者</p>
+                <div class="hero-affiliation">国防科技大学 · 电子科学学院<br>信息与通信工程 · 博士在读</div>
+                <div class="hero-research">
+                    <span class="research-tag">智能感知与处理</span>
+                    <span class="research-tag">认知雷达</span>
+                    <span class="research-tag">波形设计</span>
+                    <span class="research-tag">信息融合</span>
+                    <span class="research-tag">目标跟踪</span>
+                </div>
+                <div class="hero-contact">
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        yuruofeng17@outlook.com
+                    </div>
+                    <div class="contact-item">
+                        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        +86 155-2133-4476
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="education">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/></svg></div>
+                <h2 class="section-title">教育经历</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item fade-in"><div class="timeline-date">2020.03 - 至今</div><div class="timeline-school">国防科技大学</div><div class="timeline-degree">信息与通信工程 · 博士</div><div class="timeline-detail">研究方向：智能感知与处理</div></div>
+                <div class="timeline-item fade-in"><div class="timeline-date">2017.09 - 2019.12</div><div class="timeline-school">国防科技大学</div><div class="timeline-degree">电子与通信工程 · 硕士</div><div class="timeline-detail">研究方向：信息融合与目标跟踪</div></div>
+                <div class="timeline-item fade-in"><div class="timeline-date">2012.09 - 2016.06</div><div class="timeline-school">华南理工大学</div><div class="timeline-degree">电子科学与技术 · 本科</div><div class="timeline-detail">GPA：3.62/4（前15%）</div></div>
+            </div>
+        </div>
+    </section>
+    <section id="publications">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                <h2 class="section-title">学术成果</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="stats-grid fade-in">
+                <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-number">8+</div><div class="stat-label">发表论文</div></div>
+                <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-number">4</div><div class="stat-label">期刊论文</div></div>
+                <div class="stat-card"><div class="stat-icon">🎤</div><div class="stat-number">3</div><div class="stat-label">会议论文</div></div>
+                <div class="stat-card"><div class="stat-icon">📜</div><div class="stat-number">1</div><div class="stat-label">发明专利</div></div>
+            </div>
+            <div class="pub-category fade-in">
+                <h3 class="pub-category-title">期刊论文<span class="pub-category-count">4 篇</span></h3>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">Waveform Design Based on Mutual Information Upper Bound for Joint Detection and Estimation</div><div class="pub-badges"><span class="pub-badge sci">SCI</span><span class="pub-badge new">NEW</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>Ruofeng Yu</strong>, Chenyang Luo, Mengdi Bai, Shangqu Yan, Wei Yang, Yaowen Fu</span><span class="pub-year">2025</span></div><div class="pub-venue">Frontiers of Information Technology & Electronic Engineering (in press)</div><div class="pub-links"><a href="https://doi.org/10.1631/FITEE.2500276" class="pub-link" target="_blank"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>DOI</a><a href="https://arxiv.org/abs/2504.21322" class="pub-link" target="_blank"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>arXiv</a></div></div>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">Waveform Design using Cauchy-Schwarz Divergence for Target Detection</div><div class="pub-badges"><span class="pub-badge sci">SCI</span><span class="pub-badge new">NEW</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>Ruofeng Yu</strong>, Chenyang Luo, Mengdi Bai, et al.</span><span class="pub-year">2025</span></div><div class="pub-venue">IEEE Signal Processing Letters</div></div>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">Waveform Design for Target Information Maximization over a Complex Circle Manifold</div><div class="pub-badges"><span class="pub-badge sci">SCI</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>Ruofeng Yu</strong>, Yaowen Fu, Wei Yang, Mengdi Bai, Jingyang Zhou, Mingfei Chen</span><span class="pub-year">2024</span></div><div class="pub-venue">Remote Sensing, 16(4): 645</div><div class="pub-links"><a href="https://doi.org/10.3390/rs16040645" class="pub-link" target="_blank"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>DOI</a></div></div>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">面向不同雷达任务的认知波形优化综述</div><div class="pub-badges"><span class="pub-badge ei">EI</span><span class="pub-badge hot">高被引</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>余若峰</strong>, 杨威, 付耀文, 张文鹏</span><span class="pub-year">2022</span></div><div class="pub-venue">电子学报, 50(3): 726-752</div><div class="pub-links"><a href="https://doi.org/10.12263/DZXB.20211068" class="pub-link" target="_blank"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>DOI</a></div></div>
+            </div>
+            <div class="pub-category fade-in">
+                <h3 class="pub-category-title">会议论文<span class="pub-category-count">3 篇</span></h3>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">Sparse Spectrum Aperiodic Waveform Design Based on Riemannian Manifold Optimization</div><div class="pub-badges"><span class="pub-badge ei">EI</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>Ruofeng Yu</strong>, Dong Li, Wei Yang, et al.</span><span class="pub-year">2023</span></div><div class="pub-venue">IET International Radar Conference 2023, CP874, pp. 860-865</div></div>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">Multi-Bernoulli Track-before-detect Algorithm for Distributed Target with Unknown Amplitude Information</div><div class="pub-badges"><span class="pub-badge ei">EI</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>Ruofeng Yu</strong>, Wei Yang, Yaowen Fu, et al.</span><span class="pub-year">2021</span></div><div class="pub-venue">IET Radar Conference 2020</div></div>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">Bernoulli Track-before-detect Algorithm for Distributed Target with Unknown Amplitude Information</div><div class="pub-badges"><span class="pub-badge ei">EI</span></div></div><div class="pub-meta"><span class="pub-authors"><strong>Ruofeng Yu</strong>, Wei Yang, Yaowen Fu, Wenpeng Zhang</span><span class="pub-year">2020</span></div><div class="pub-venue">IEEE 15th International Conference on Signal Processing (ICSP), pp. 590-595</div><div class="pub-links"><a href="https://www.researchgate.net/publication/350080624" class="pub-link" target="_blank"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF</a></div></div>
+            </div>
+            <div class="pub-category fade-in">
+                <h3 class="pub-category-title">发明专利<span class="pub-category-count">1 项</span></h3>
+                <div class="pub-item"><div class="pub-item-header"><div class="pub-title">一种面向多距离扩展目标的多伯努利检测前跟踪方法</div><div class="pub-badges"><span class="pub-badge ei">专利</span></div></div><div class="pub-meta"><span class="pub-authors">杨威, <strong>余若峰</strong>, 付耀文, et al.</span><span class="pub-year">2020</span></div><div class="pub-venue">中国发明专利 CN111580084A</div></div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;"><a href="https://scholar.google.com/citations?user=itS72xEAAAAJ" class="scholar-link" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>View on Google Scholar</a></div>
+        </div>
+    </section>
+    <section id="projects">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                <h2 class="section-title">项目经历</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="project-grid">
+                <div class="project-card fade-in"><div class="project-header"><h3 class="project-title">宽带雷达目标认知机理与方法</h3><span class="project-role">技术骨干</span></div><div class="project-date">2021.04 - 2022.04</div><ul class="project-content"><li>构建散射特性与运动特征的联合表征分析框架，通过Rao-Blackwellisation提升计算效率</li><li>基于贝叶斯滤波框架融合信息熵准则，设计动态波形优选算法，检测跟踪性能改善0.5dB</li></ul></div>
+                <div class="project-card fade-in"><div class="project-header"><h3 class="project-title">高分数据关联与融合处理</h3><span class="project-role">技术骨干</span></div><div class="project-date">2021.03 - 2021.12</div><ul class="project-content"><li>基于SIFT++的特征匹配算法，实现云雾条件下光学/SAR图像精准对齐</li><li>基于数字地球平台三维可视化集成模块，构建多传感器数据智能融合插件</li></ul></div>
+                <div class="project-card fade-in"><div class="project-header"><h3 class="project-title">多传感器多目标融合跟踪研究</h3><span class="project-role">技术骨干</span></div><div class="project-date">2020.05 - 2020.12</div><ul class="project-content"><li>研发基于高斯混合实现的概率假设密度滤波框架，提升多雷达系统多目标融合跟踪性能</li><li>设计多雷达空间配准方案，实现空地平台观测数据的快速转换</li><li>将数据关联思想结合优先级统计学理论，提供滤波器对时变目标数目的鲁棒性</li></ul></div>
+            </div>
+        </div>
+    </section>
+    <section id="awards">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></div>
+                <h2 class="section-title">荣誉奖项</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="awards-grid">
+                <div class="award-item fade-in"><div class="award-icon">🏆</div><div class="award-content"><div class="award-year">2024</div><div class="award-text">军事科学技术进步奖二等奖</div></div></div>
+                <div class="award-item fade-in"><div class="award-icon">🎯</div><div class="award-content"><div class="award-year">2021-2023</div><div class="award-text">国防科技大学优秀学员、优秀学生骨干</div></div></div>
+                <div class="award-item fade-in"><div class="award-icon">📊</div><div class="award-content"><div class="award-year">2021</div><div class="award-text">研究生数学建模竞赛全国二等奖</div></div></div>
+                <div class="award-item fade-in"><div class="award-icon">📡</div><div class="award-content"><div class="award-year">2020</div><div class="award-text">研究生电子设计竞赛华中赛区二等奖</div></div></div>
+                <div class="award-item fade-in"><div class="award-icon">🎓</div><div class="award-content"><div class="award-year">2020</div><div class="award-text">国防科技大学新生一等奖学金</div></div></div>
+                <div class="award-item fade-in"><div class="award-icon">⭐</div><div class="award-content"><div class="award-year">2015</div><div class="award-text">华南理工大学"三好学生"、校二等奖学金</div></div></div>
+            </div>
+        </div>
+    </section>
+    <section id="skills">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+                <h2 class="section-title">专业技能</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card fade-in"><h4 class="skill-title">理论基础</h4><ul class="skill-list"><li>最优化理论与基本优化方法</li><li>有限集统计学理论（FISST）</li><li>贝叶斯滤波与卡尔曼滤波</li><li>粒子滤波与蒙特卡洛方法</li></ul></div>
+                <div class="skill-card fade-in"><h4 class="skill-title">专业领域</h4><ul class="skill-list"><li>多目标跟踪理论与算法</li><li>雷达信号处理</li><li>认知雷达波形设计</li><li>多传感器数据融合</li></ul></div>
+                <div class="skill-card fade-in"><h4 class="skill-title">实践经验</h4><ul class="skill-list"><li>海康威视自动驾驶算法实习</li><li>激光点云多扩展目标跟踪</li><li>雷视融合交通监测系统</li><li>三维可视化数据融合插件</li></ul></div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-name">YU RUOFENG</div>
+            <div class="footer-links">
+                <a href="mailto:yuruofeng17@outlook.com">Email</a>
+                <a href="https://scholar.google.com/citations?user=itS72xEAAAAJ" target="_blank">Google Scholar</a>
+                <a href="https://zhihu.com/people/yyrrff-87/posts" target="_blank">知乎</a>
+                <a href="https://github.com/yuruofeng" target="_blank">GitHub</a>
+            </div>
+            <div class="footer-copyright">© 2025 Yu Ruofeng · National University of Defense Technology</div>
+        </div>
+    </footer>
+    <div class="waveform"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path fill="none" stroke="rgba(0, 212, 255, 0.5)" stroke-width="2" d="M0,30 Q50,10 100,30 T200,30 T300,30 T400,30 T500,30 T600,30 T700,30 T800,30 T900,30 T1000,30 T1100,30 T1200,30 T1300,30 T1400,30 T1500,30 T1600,30 T1700,30 T1800,30 T1900,30 T2000,30 T2100,30 T2200,30 T2300,30 T2400,30"/></svg></div>
+    <script>
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        const particles = [];
+        const particleCount = 80;
+        class Particle {
+            constructor() { this.reset(); }
+            reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 0.5; this.speedX = (Math.random() - 0.5) * 0.5; this.speedY = (Math.random() - 0.5) * 0.5; this.opacity = Math.random() * 0.5 + 0.1; }
+            update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) { this.reset(); } }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 212, 255, ' + this.opacity + ')'; ctx.fill(); }
+        }
+        for (let i = 0; i < particleCount; i++) { particles.push(new Particle()); }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((particle, i) => {
+                particle.update();
+                particle.draw();
+                particles.slice(i + 1).forEach(otherParticle => {
+                    const dx = particle.x - otherParticle.x;
+                    const dy = particle.y - otherParticle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 150) { ctx.beginPath(); ctx.strokeStyle = 'rgba(0, 212, 255, ' + (0.1 * (1 - distance / 150)) + ')'; ctx.lineWidth = 0.5; ctx.moveTo(particle.x, particle.y); ctx.lineTo(otherParticle.x, otherParticle.y); ctx.stroke(); }
+                });
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } }); }, observerOptions);
+        fadeElements.forEach(el => observer.observe(el));
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function(e) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) { target.scrollIntoView({ behavior: 'smooth' }); } }); });
+    </script>
+</body>
+</html>
