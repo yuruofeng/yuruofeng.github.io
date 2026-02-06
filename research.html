@@ -1,0 +1,31 @@
+---
+layout: default
+title: 研究工作
+---
+
+<div class="page-header">
+  <div class="hero-tag">RESEARCH</div>
+  <h1>研究工作</h1>
+  <p>学术论文、研究提案与政策分析，聚焦于岩石力学、教育技术与区域政策研究。</p>
+</div>
+
+<div class="listing-grid">
+  <div class="timeline">
+    {% assign sorted_papers = site.papers | sort: 'date' | reverse %}
+    {% for paper in sorted_papers %}
+    <a href="{{ paper.url | relative_url }}" class="timeline-item reveal">
+      <div class="timeline-date">{{ paper.date | date: "%Y-%m" }}</div>
+      <div class="timeline-title">{{ paper.title }}</div>
+      <div class="timeline-venue">{{ paper.venue }}</div>
+      <div class="timeline-desc">{{ paper.description }}</div>
+      {% if paper.tags %}
+      <div class="card-techs" style="margin-top: 0.8rem;">
+        {% for tag in paper.tags %}
+        <span class="tech-tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</div>

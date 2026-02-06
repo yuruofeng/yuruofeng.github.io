@@ -1,0 +1,21 @@
+<nav class="site-nav">
+  <a href="{{ '/' | relative_url }}" class="nav-logo">
+    <span>&lt;/&gt;</span> JENNA<span class="blink">_</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ '/notes/' | relative_url }}" {% if page.url contains '/notes' %}class="active"{% endif %}>笔记</a></li>
+    <li><a href="{{ '/research/' | relative_url }}" {% if page.url contains '/research' %}class="active"{% endif %}>研究</a></li>
+    <li><a href="{{ '/projects/' | relative_url }}" {% if page.url contains '/projects' %}class="active"{% endif %}>项目</a></li>
+    <li><a href="{{ '/#contact' | relative_url }}">联系</a></li>
+  </ul>
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-nav">
+  <a href="{{ '/notes/' | relative_url }}">笔记</a>
+  <a href="{{ '/research/' | relative_url }}">研究</a>
+  <a href="{{ '/projects/' | relative_url }}">项目</a>
+  <a href="{{ '/#contact' | relative_url }}">联系</a>
+</div>

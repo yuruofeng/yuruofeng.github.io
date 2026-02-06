@@ -1,1 +1,67 @@
-theme: jekyll-theme-cayman
+# ── Site Settings ──
+title: "Jenna's Tech Space"
+description: "工程咨询 · 学术研究 · 智能系统开发"
+url: "https://your-username.github.io"
+baseurl: ""
+author:
+  name: Jenna
+  email: your-email@example.com
+  github: your-username
+  scholar: "https://scholar.google.com/citations?user=YOUR_ID"
+
+# ── Build Settings ──
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  math_engine: mathjax
+
+# ── Collections ──
+collections:
+  notes:
+    output: true
+    permalink: /notes/:slug/
+    sort_by: date
+  papers:
+    output: true
+    permalink: /research/:slug/
+    sort_by: date
+  projects:
+    output: true
+    permalink: /projects/:slug/
+
+# ── Default Front Matter ──
+defaults:
+  - scope:
+      path: ""
+      type: "notes"
+    values:
+      layout: "post"
+      type: "note"
+  - scope:
+      path: ""
+      type: "papers"
+    values:
+      layout: "paper"
+      type: "paper"
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: "project"
+      type: "project"
+
+# ── Plugins ──
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# ── Exclude ──
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - node_modules

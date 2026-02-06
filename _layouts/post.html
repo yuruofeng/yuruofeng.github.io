@@ -1,0 +1,36 @@
+---
+layout: default
+---
+<div class="article-container">
+  <a href="{{ '/notes/' | relative_url }}" class="back-link">← 返回笔记列表</a>
+
+  <article>
+    <div class="article-meta">
+      <div class="card-tag">{{ page.category }}</div>
+      <h1>{{ page.title }}</h1>
+      <div class="article-meta-info">
+        <span>📅 {{ page.date | date: "%Y-%m-%d" }}</span>
+        {% if page.author %}<span>✍️ {{ page.author }}</span>{% endif %}
+        {% if page.tags %}<span>🏷️ {{ page.tags | join: ", " }}</span>{% endif %}
+      </div>
+      {% if page.tags %}
+      <div class="card-techs" style="margin-top: 1rem;">
+        {% for tag in page.tags %}
+        <span class="tech-tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    {% if page.toc %}
+    <div class="toc">
+      <div class="toc-title">目录</div>
+      {{ page.content | markdownify | toc_only }}
+    </div>
+    {% endif %}
+
+    <div class="article-content">
+      {{ content }}
+    </div>
+  </article>
+</div>

@@ -1,0 +1,42 @@
+---
+layout: default
+title: 技术笔记
+---
+
+<div class="page-header">
+  <div class="hero-tag">TECHNICAL NOTES</div>
+  <h1>技术笔记</h1>
+  <p>系统化的技术学习记录，涵盖计算机视觉、工程实践、AI 框架开发等领域。</p>
+</div>
+
+<!-- Tag Filter -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">ALL</button>
+  {% assign all_categories = "" %}
+  {% for note in site.notes %}
+    {% unless all_categories contains note.category %}
+      {% assign all_categories = all_categories | append: note.category | append: "," %}
+      <button class="filter-btn" data-filter="{{ note.category }}">{{ note.category }}</button>
+    {% endunless %}
+  {% endfor %}
+</div>
+
+<div class="listing-grid">
+  <div class="card-grid">
+    {% assign sorted_notes = site.notes | sort: 'date' | reverse %}
+    {% for note in sorted_notes %}
+    <a href="{{ note.url | relative_url }}" class="card reveal" data-tags="{{ note.category }}">
+      <div class="card-icon">{{ note.icon | default: "📝" }}</div>
+      <div class="card-tag">{{ note.category }}</div>
+      <div class="card-title">{{ note.title }}</div>
+      <div class="card-date">{{ note.date | date: "%Y-%m-%d" }}</div>
+      <div class="card-desc">{{ note.description }}</div>
+      <div class="card-techs">
+        {% for tag in note.tags %}
+        <span class="tech-tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
