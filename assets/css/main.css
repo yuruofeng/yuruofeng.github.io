@@ -109,15 +109,17 @@ img { max-width: 100%; height: auto; }
 nav.site-nav {
   position: fixed;
   top: 0; left: 0;
-  width: 100%;
+  width: 240px;
+  height: 100vh;
   z-index: 100;
-  padding: 0.9rem 2.5rem;
+  padding: 2rem 0;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   background: rgba(10, 14, 23, 0.88);
   backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   transition: border-color 0.3s;
 }
 
@@ -131,6 +133,9 @@ nav.site-nav {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0 2rem;
+  width: 100%;
+  justify-content: center;
 }
 
 .nav-logo:hover { color: var(--accent-cyan); }
@@ -144,8 +149,12 @@ nav.site-nav {
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1.5rem;
   list-style: none;
+  margin-top: 3rem;
+  width: 100%;
+  padding: 0 2rem;
 }
 
 .nav-links a {
@@ -155,6 +164,8 @@ nav.site-nav {
   letter-spacing: 1.5px;
   text-transform: uppercase;
   position: relative;
+  display: block;
+  padding: 0.5rem 0;
 }
 
 .nav-links a::after {
@@ -193,7 +204,7 @@ nav.site-nav {
 .mobile-nav {
   display: none;
   position: fixed;
-  top: 56px; left: 0;
+  top: 60px; left: 0;
   width: 100%;
   background: rgba(10, 14, 23, 0.96);
   backdrop-filter: blur(24px);
@@ -226,8 +237,9 @@ nav.site-nav {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 8rem 6rem 4rem;
+  padding: 8rem 6rem 4rem 8rem; /* 增加左边距为侧边栏腾出空间 */
   max-width: var(--content-width);
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 .hero-tag {
@@ -293,6 +305,7 @@ nav.site-nav {
   opacity: 0;
   animation: fadeIn 1.5s 1.5s forwards;
   pointer-events: none;
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 .hero-terminal .hl-cyan { color: var(--accent-cyan); }
@@ -348,7 +361,8 @@ nav.site-nav {
   gap: 1px;
   background: var(--border-color);
   border: 1px solid var(--border-color);
-  margin: 0 6rem;
+  margin: 0 6rem 0 8rem; /* 增加左边距为侧边栏腾出空间 */
+  margin-left: calc(240px + 2rem); /* 侧边栏宽度 + 原有左边距 */
 }
 
 .stat-item {
@@ -382,7 +396,8 @@ nav.site-nav {
 .section {
   position: relative;
   z-index: 2;
-  padding: 5rem 6rem;
+  padding: 5rem 6rem 5rem 8rem; /* 增加左边距为侧边栏腾出空间 */
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 .section-header {
@@ -659,7 +674,8 @@ nav.site-nav {
 .page-header {
   position: relative;
   z-index: 2;
-  padding: 10rem 6rem 3rem;
+  padding: 10rem 6rem 3rem 8rem; /* 增加左边距为侧边栏腾出空间 */
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 .page-header .hero-tag {
@@ -683,10 +699,11 @@ nav.site-nav {
 .filter-bar {
   position: relative;
   z-index: 2;
-  padding: 0 6rem 2rem;
+  padding: 0 6rem 2rem 8rem; /* 增加左边距为侧边栏腾出空间 */
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 .filter-btn {
@@ -711,7 +728,8 @@ nav.site-nav {
 .listing-grid {
   position: relative;
   z-index: 2;
-  padding: 0 6rem 5rem;
+  padding: 0 6rem 5rem 8rem; /* 增加左边距为侧边栏腾出空间 */
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 /* ══════════════════════════════════
@@ -991,11 +1009,12 @@ nav.site-nav {
 footer.site-footer {
   position: relative;
   z-index: 2;
-  padding: 2.5rem 6rem;
+  padding: 2.5rem 6rem 2.5rem 8rem; /* 增加左边距为侧边栏腾出空间 */
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-left: 240px; /* 侧边栏宽度 */
 }
 
 .footer-text {
@@ -1037,13 +1056,55 @@ footer.site-footer {
 }
 
 @media (max-width: 900px) {
-  .section, .hero, .page-header { padding-left: 2rem; padding-right: 2rem; }
-  .stats-bar { margin: 0 2rem; grid-template-columns: repeat(2, 1fr); }
+  /* 侧边栏转换为顶部导航 */
+  nav.site-nav {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.9rem 2.5rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .nav-logo {
+    padding: 0;
+    justify-content: flex-start;
+    width: auto;
+  }
+
+  .nav-links {
+    display: none; /* 移动端隐藏导航链接，显示汉堡菜单 */
+    flex-direction: row;
+    margin-top: 0;
+    padding: 0;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* 移除内容区域的左边距 */
+  .section, .hero, .page-header {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-left: 0;
+  }
+
+  .hero {
+    padding-left: 2rem;
+    margin-left: 0;
+  }
+
+  .stats-bar {
+    margin: 0 2rem;
+    margin-left: 2rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .filter-bar, .listing-grid { padding-left: 2rem; padding-right: 2rem; }
   footer.site-footer { padding: 2rem; flex-direction: column; gap: 1rem; }
   .contact-grid { grid-template-columns: 1fr; }
-  .nav-links { display: none; }
-  .hamburger { display: flex; }
 }
 
 @media (max-width: 600px) {

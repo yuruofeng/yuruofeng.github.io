@@ -38,9 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = document.querySelector('.site-nav');
   if (nav) {
     window.addEventListener('scroll', () => {
-      nav.style.borderBottomColor = window.scrollY > 50
-        ? 'rgba(0, 229, 255, 0.1)'
-        : '';
+      const borderColor = window.scrollY > 50 ? 'rgba(0, 229, 255, 0.1)' : '';
+      // 根据窗口宽度判断是侧边栏（桌面端）还是顶部导航（移动端）
+      if (window.innerWidth > 900) {
+        nav.style.borderRightColor = borderColor;
+      } else {
+        nav.style.borderBottomColor = borderColor;
+      }
     });
   }
 
