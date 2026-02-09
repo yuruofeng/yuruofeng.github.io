@@ -18,25 +18,26 @@ math: true
 
 ### 定理的数学表述
 
-Rao-Blackwell定理(Rao 1945, Blackwell 1947)提供了通过条件期望改进估计器的理论基础。设$\delta(X)$为待估参数$\theta$的估计量，$T(X)$为充分统计量，则Rao-Blackwell估计量定义为：
-
-$$\delta_{RB}(X) = E[\delta(X) | T(X)]$$
-
-该估计量满足**均方误差不增**性质：
-
-$$E[(\delta_{RB}(X) - \theta)^2] \leq E[(\delta(X) - \theta)^2]$$
-
-其中等号仅在$\delta(X)$已为$T(X)$的函数时成立。方差缩减量可精确表示为：
+> ### 定理：Rao-Blackwell 定理 (Rao 1945, Blackwell 1947)
+> 提供了通过条件期望改进估计器的理论基础。设 $\delta(X)$ 为待估参数 $\theta$ 的估计量，$T(X)$ 为充分统计量，则 **Rao-Blackwell 估计量** 定义为：
+> 
+> $$\delta_{RB}(X) = E[\delta(X) | T(X)]$$
+> 
+> 该估计量满足 **均方误差不增** 性质：
+> 
+> $$E[(\delta_{RB}(X) - \theta)^2] \leq E[(\delta(X) - \theta)^2]$$
+> 
+> 其中等号仅在 $\delta(X)$ 已为 $T(X)$ 的函数时成立。方差缩减量可精确表示为：
 
 $$E[(\delta(X) - \theta)^2] - E[(\delta_{RB}(X) - \theta)^2] = E[\text{Var}(\delta(X) | T(X))]$$
 
-### 全方差分解公式
+### 💡 全方差分解公式
 
-理解RBPF方差缩减的核心是**全方差定律**(Law of Total Variance)：
+理解 RBPF 方差缩减的核心是 **全方差定律** (Law of Total Variance)：
 
 $$\text{Var}(Y) = E[\text{Var}(Y|X)] + \text{Var}(E[Y|X])$$
 
-当我们用条件期望$E[Y|X]$替代$Y$作为估计量时，新估计量的方差仅为原方差的第二项$\text{Var}(E[Y|X])$，而消除了第一项$E[\text{Var}(Y|X)]$。**这正是Rao-Blackwellization降低方差的数学本质**。
+> **核心逻辑**：当我们用条件期望 $E[Y|X]$ 替代 $Y$ 作为估计量时，新估计量的方差仅为原方差的第二项 $\text{Var}(E[Y|X])$，而消除了第一项 $E[\text{Var}(Y|X)]$。**这正是 Rao-Blackwellization 降低方差的数学本质**。
 
 ### 在粒子滤波中的应用原理
 

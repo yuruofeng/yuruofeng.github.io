@@ -17,21 +17,14 @@ math: true
 
 ### 1.1 基本定义
 
-**定义 1.1（状态空间模型）** 设 $(\Omega, \mathcal{F}, \mathbb{P})$ 为概率空间。状态空间隐马尔可夫模型由以下随机过程组成：
-
-设状态空间 $\mathcal{X} \subseteq \mathbb{R}^{d_x}$，观测空间 $\mathcal{Y} \subseteq \mathbb{R}^{d_y}$。定义：
-
-**状态过程** $\{X_t\}_{t \geq 0}$：取值于 $\mathcal{X}$ 的马尔可夫链，满足马尔可夫性质：
-
-$$
-\mathbb{P}(X_t \in A | X_{0:t-1}) = \mathbb{P}(X_t \in A | X_{t-1}), \quad \forall A \in \mathcal{B}(\mathcal{X})
-$$
-
-**观测过程** $\{Y_t\}_{t \geq 1}$：取值于 $\mathcal{Y}$，给定状态序列条件独立：
-
-$$
-\mathbb{P}(Y_{1:n} \in B | X_{0:n}) = \prod_{t=1}^{n} \mathbb{P}(Y_t \in B_t | X_t), \quad \forall B = B_1 \times \cdots \times B_n \in \mathcal{B}(\mathcal{Y}^n)
-$$
+> **定义 1.1（状态空间模型）** 设 $(\Omega, \mathcal{F}, \mathbb{P})$ 为概率空间。状态空间隐马尔可夫模型由以下随机过程组成：
+> 
+> 设状态空间 $\mathcal{X} \subseteq \mathbb{R}^{d_x}$，观测空间 $\mathcal{Y} \subseteq \mathbb{R}^{d_y}$。定义：
+> 
+> 1. **状态过程** $\{X_t\}_{t \geq 0}$：取值于 $\mathcal{X}$ 的马尔可夫链，满足：
+>    $$\mathbb{P}(X_t \in A | X_{0:t-1}) = \mathbb{P}(X_t \in A | X_{t-1})$$
+> 2. **观测过程** $\{Y_t\}_{t \geq 1}$：取值于 $\mathcal{Y}$，给定状态序列条件独立：
+>    $$\mathbb{P}(Y_{1:n} \in B | X_{0:n}) = \prod_{t=1}^{n} \mathbb{P}(Y_t \in B_t | X_t)$$
 
 ### 1.2 模型的概率密度表示
 
@@ -71,14 +64,13 @@ $$
 
 ### 2.1 预测步骤的数学推导
 
-**定理 2.1（Chapman-Kolmogorov预测方程）** 设 $\pi_{t-1}(x_{t-1})$ 为时刻 $t-1$ 的滤波密度，则预测密度满足：
+**定理 2.1（Chapman-Kolmogorov 预测方程）**  
+设 $\pi_{t-1}(x_{t-1})$ 为时刻 $t-1$ 的滤波密度，则预测密度满足：
 
-$$
-\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}
-$$
+$$\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}$$
 
-**证明：** 应用全概率公式与马尔可夫性质：
-
+**证明过程：**  
+应用全概率公式与马尔可夫性质：
 $$
 \begin{aligned}
 \pi_{t|t-1}(x_t) &= p(x_t | y_{1:t-1}) \\
@@ -87,8 +79,7 @@ $$
 &= \int_{\mathcal{X}} p(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}
 \end{aligned}
 $$
-
-第四个等号利用了马尔可夫性质：$p(x_t | x_{t-1}, y_{1:t-1}) = p(x_t | x_{t-1})$。 $\square$
+其中利用了马尔可夫性质：$p(x_t | x_{t-1}, y_{1:t-1}) = p(x_t | x_{t-1})$。 $\square$
 
 **注记：** 上述积分可用Lebesgue-Stieltjes积分形式表示为：
 
