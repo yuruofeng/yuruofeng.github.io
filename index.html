@@ -13,7 +13,7 @@ title: Home
     专注于工程咨询、学术研究与智能系统开发，致力于用技术连接理论与实践，将复杂构想转化为可靠的解决方案。
   </p>
   <div class="hero-cta">
-    <a href="{{ '/projects/' | relative_url }}" class="btn btn-filled">探索项目 →</a>
+    <a href="#quick-nav" class="btn btn-filled">探索更多 →</a>
     <a href="#contact" class="btn">取得联系</a>
   </div>
 
@@ -52,90 +52,36 @@ title: Home
   </div>
 </div>
 
-<!-- Recent Notes -->
-<section class="section" id="notes">
+<!-- Quick Nav Cards -->
+<section class="section" id="quick-nav">
   <div class="section-header reveal">
-    <div class="section-label">Technical Notes</div>
-    <h2 class="section-title">最新技术笔记</h2>
+    <div class="section-label">Explore</div>
+    <h2 class="section-title">探索更多</h2>
     <div class="section-divider"></div>
   </div>
 
   <div class="card-grid">
-    {% assign recent_notes = site.notes | sort: 'date' | reverse | limit: 4 %}
-    {% for note in recent_notes %}
-    <a href="{{ note.url | relative_url }}" class="card reveal">
-      <div class="card-icon">{{ note.icon | default: "📝" }}</div>
-      <div class="card-tag">{{ note.category }}</div>
-      <div class="card-title">{{ note.title }}</div>
-      <div class="card-date">{{ note.date | date: "%Y-%m-%d" }}</div>
-      <div class="card-desc">{{ note.description }}</div>
-      <div class="card-techs">
-        {% for tag in note.tags %}
-        <span class="tech-tag">{{ tag }}</span>
-        {% endfor %}
-      </div>
+    <a href="{{ '/notes/' | relative_url }}" class="nav-card reveal">
+      <div class="nav-card-icon">📝</div>
+      <div class="nav-card-count">{{ site.notes | size }}+</div>
+      <div class="nav-card-title">技术笔记</div>
+      <div class="nav-card-desc">系统化的技术学习记录，涵盖计算机视觉、工程实践、AI 框架等领域。</div>
+      <div class="nav-card-action">浏览笔记 →</div>
     </a>
-    {% endfor %}
-  </div>
-
-  <div style="text-align: center; margin-top: 2.5rem;" class="reveal">
-    <a href="{{ '/notes/' | relative_url }}" class="btn">查看全部笔记 →</a>
-  </div>
-</section>
-
-<!-- Research -->
-<section class="section" id="research">
-  <div class="section-header reveal">
-    <div class="section-label">Research</div>
-    <h2 class="section-title">研究工作</h2>
-    <div class="section-divider"></div>
-  </div>
-
-  <div class="timeline">
-    {% assign sorted_papers = site.papers | sort: 'date' | reverse %}
-    {% for paper in sorted_papers %}
-    <a href="{{ paper.url | relative_url }}" class="timeline-item reveal">
-      <div class="timeline-date">{{ paper.date | date: "%Y" }}</div>
-      <div class="timeline-title">{{ paper.title }}</div>
-      <div class="timeline-venue">{{ paper.venue }}</div>
-      <div class="timeline-desc">{{ paper.description }}</div>
+    <a href="{{ '/research/' | relative_url }}" class="nav-card reveal">
+      <div class="nav-card-icon">📎</div>
+      <div class="nav-card-count">{{ site.papers | size }}+</div>
+      <div class="nav-card-title">研究工作</div>
+      <div class="nav-card-desc">学术论文与研究提案，聚焦于岩石力学、教育技术与区域政策研究。</div>
+      <div class="nav-card-action">查看研究 →</div>
     </a>
-    {% endfor %}
-  </div>
-</section>
-
-<!-- Projects -->
-<section class="section" id="projects">
-  <div class="section-header reveal">
-    <div class="section-label">Projects</div>
-    <h2 class="section-title">开源项目</h2>
-    <div class="section-divider"></div>
-  </div>
-
-  <div class="card-grid">
-    {% assign sorted_projects = site.projects | sort: 'date' | reverse %}
-    {% for proj in sorted_projects %}
-    <a href="{{ proj.url | relative_url }}" class="code-card reveal">
-      <div class="code-card-header">
-        <div class="code-card-dots"><span></span><span></span><span></span></div>
-        <div class="code-card-filename">{{ proj.repo_name | default: proj.slug }}/</div>
-      </div>
-      <div class="code-card-body">
-        <div class="card-tag">{{ proj.category }}</div>
-        <div class="card-title">{{ proj.title }}</div>
-        <div class="card-desc">{{ proj.description }}</div>
-        <div class="card-techs">
-          {% for tag in proj.tags %}
-          <span class="tech-tag">{{ tag }}</span>
-          {% endfor %}
-        </div>
-        <div class="code-card-stats">
-          <div class="code-stat"><span class="dot dot-{{ proj.lang_class | default: 'python' }}"></span> {{ proj.language }}</div>
-          <div class="code-stat">📄 {{ proj.license | default: "MIT" }}</div>
-        </div>
-      </div>
+    <a href="{{ '/projects/' | relative_url }}" class="nav-card reveal">
+      <div class="nav-card-icon">⌘</div>
+      <div class="nav-card-count">{{ site.projects | size }}+</div>
+      <div class="nav-card-title">开源项目</div>
+      <div class="nav-card-desc">个人开发的工具与框架，覆盖 AI Agent、计算机视觉、内容分析等方向。</div>
+      <div class="nav-card-action">探索项目 →</div>
     </a>
-    {% endfor %}
   </div>
 </section>
 
