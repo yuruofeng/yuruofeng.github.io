@@ -7,7 +7,6 @@ description: "辅助粒子滤波（Auxiliary Particle Filter, APF）由Pitt与Sh
 tags: ["Statistics", "Filtering", "Mathematics"]
 math: true
 ---
-
 # 辅助粒子滤波：数学理论与推导详解
 
 **辅助粒子滤波（Auxiliary Particle Filter, APF）由Pitt与Shephard于1999年在《美国统计协会杂志》（JASA）上发表的开创性论文中首次提出，该方法通过在重采样前引入观测信息的"前瞻"机制，从根本上革新了序贯蒙特卡罗方法。** 本文旨在提供辅助粒子滤波完整的数学理论框架与严格推导。
@@ -24,11 +23,15 @@ math: true
 
 **状态过程** $\{X_t\}_{t \geq 0}$：取值于 $\mathcal{X}$ 的马尔可夫链，满足马尔可夫性质：
 
-$$\mathbb{P}(X_t \in A | X_{0:t-1}) = \mathbb{P}(X_t \in A | X_{t-1}), \quad \forall A \in \mathcal{B}(\mathcal{X})$$
+$$
+\mathbb{P}(X_t \in A | X_{0:t-1}) = \mathbb{P}(X_t \in A | X_{t-1}), \quad \forall A \in \mathcal{B}(\mathcal{X})
+$$
 
 **观测过程** $\{Y_t\}_{t \geq 1}$：取值于 $\mathcal{Y}$，给定状态序列条件独立：
 
-$$\mathbb{P}(Y_{1:n} \in B | X_{0:n}) = \prod_{t=1}^{n} \mathbb{P}(Y_t \in B_t | X_t), \quad \forall B = B_1 \times \cdots \times B_n \in \mathcal{B}(\mathcal{Y}^n)$$
+$$
+\mathbb{P}(Y_{1:n} \in B | X_{0:n}) = \prod_{t=1}^{n} \mathbb{P}(Y_t \in B_t | X_t), \quad \forall B = B_1 \times \cdots \times B_n \in \mathcal{B}(\mathcal{Y}^n)
+$$
 
 ### 1.2 模型的概率密度表示
 
@@ -42,19 +45,25 @@ $$\mathbb{P}(Y_{1:n} \in B | X_{0:n}) = \prod_{t=1}^{n} \mathbb{P}(Y_t \in B_t |
 
 模型的联合密度可分解为：
 
-$$p(x_{0:n}, y_{1:n}) = \mu(x_0) \prod_{t=1}^{n} f(x_t | x_{t-1}) \prod_{t=1}^{n} g(y_t | x_t)$$
+$$
+p(x_{0:n}, y_{1:n}) = \mu(x_0) \prod_{t=1}^{n} f(x_t | x_{t-1}) \prod_{t=1}^{n} g(y_t | x_t)
+$$
 
 ### 1.3 滤波问题的严格定义
 
 **定义 1.2（滤波分布）** 给定观测序列 $y_{1:t} = (y_1, \ldots, y_t)$，滤波分布定义为条件分布：
 
-$$\pi_t(dx_t) := \mathbb{P}(X_t \in dx_t | Y_{1:t} = y_{1:t})$$
+$$
+\pi_t(dx_t) := \mathbb{P}(X_t \in dx_t | Y_{1:t} = y_{1:t})
+$$
 
 其密度函数（若存在）记为 $\pi_t(x_t) := p(x_t | y_{1:t})$。
 
 **定义 1.3（预测分布）** 一步预测分布定义为：
 
-$$\pi_{t|t-1}(dx_t) := \mathbb{P}(X_t \in dx_t | Y_{1:t-1} = y_{1:t-1})$$
+$$
+\pi_{t|t-1}(dx_t) := \mathbb{P}(X_t \in dx_t | Y_{1:t-1} = y_{1:t-1})
+$$
 
 ---
 
@@ -64,22 +73,28 @@ $$\pi_{t|t-1}(dx_t) := \mathbb{P}(X_t \in dx_t | Y_{1:t-1} = y_{1:t-1})$$
 
 **定理 2.1（Chapman-Kolmogorov预测方程）** 设 $\pi_{t-1}(x_{t-1})$ 为时刻 $t-1$ 的滤波密度，则预测密度满足：
 
-$$\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}$$
+$$
+\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}
+$$
 
 **证明：** 应用全概率公式与马尔可夫性质：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 \pi_{t|t-1}(x_t) &= p(x_t | y_{1:t-1}) \\
 &= \int_{\mathcal{X}} p(x_t, x_{t-1} | y_{1:t-1}) \, dx_{t-1} \\
 &= \int_{\mathcal{X}} p(x_t | x_{t-1}, y_{1:t-1}) \, p(x_{t-1} | y_{1:t-1}) \, dx_{t-1} \\
 &= \int_{\mathcal{X}} p(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}
-\end{aligned}$$
+\end{aligned}
+$$
 
 第四个等号利用了马尔可夫性质：$p(x_t | x_{t-1}, y_{1:t-1}) = p(x_t | x_{t-1})$。 $\square$
 
 **注记：** 上述积分可用Lebesgue-Stieltjes积分形式表示为：
 
-$$\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, d\Pi_{t-1}(x_{t-1})$$
+$$
+\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, d\Pi_{t-1}(x_{t-1})
+$$
 
 其中 $\Pi_{t-1}$ 为滤波分布的累积分布函数。
 
@@ -87,31 +102,43 @@ $$\pi_{t|t-1}(x_t) = \int_{\mathcal{X}} f(x_t | x_{t-1}) \, d\Pi_{t-1}(x_{t-1})$
 
 **定理 2.2（贝叶斯更新方程）** 给定新观测 $y_t$，滤波密度满足：
 
-$$\pi_t(x_t) = \frac{g(y_t | x_t) \, \pi_{t|t-1}(x_t)}{\int_{\mathcal{X}} g(y_t | x_t') \, \pi_{t|t-1}(x_t') \, dx_t'}$$
+$$
+\pi_t(x_t) = \frac{g(y_t | x_t) \, \pi_{t|t-1}(x_t)}{\int_{\mathcal{X}} g(y_t | x_t') \, \pi_{t|t-1}(x_t') \, dx_t'}
+$$
 
 **证明：** 直接应用贝叶斯定理：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 \pi_t(x_t) &= p(x_t | y_{1:t}) = p(x_t | y_t, y_{1:t-1}) \\
 &= \frac{p(y_t | x_t, y_{1:t-1}) \, p(x_t | y_{1:t-1})}{p(y_t | y_{1:t-1})} \\
 &= \frac{p(y_t | x_t) \, \pi_{t|t-1}(x_t)}{p(y_t | y_{1:t-1})}
-\end{aligned}$$
+\end{aligned}
+$$
 
 其中第三个等号利用了观测的条件独立性：$p(y_t | x_t, y_{1:t-1}) = p(y_t | x_t)$。
 
 归一化常数（边缘似然/证据）为：
 
-$$p(y_t | y_{1:t-1}) = \int_{\mathcal{X}} g(y_t | x_t) \, \pi_{t|t-1}(x_t) \, dx_t$$  $\square$
+$$
+p(y_t | y_{1:t-1}) = \int_{\mathcal{X}} g(y_t | x_t) \, \pi_{t|t-1}(x_t) \, dx_t
+$$
+
+$\square$
 
 ### 2.3 递归滤波方程的紧凑形式
 
 **定理 2.3（最优滤波递归）** 结合预测与更新，滤波密度满足递归关系：
 
-$$\pi_t(x_t) = \frac{g(y_t | x_t) \int_{\mathcal{X}} f(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}}{\int_{\mathcal{X}} g(y_t | x_t') \int_{\mathcal{X}} f(x_t' | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1} \, dx_t'}$$
+$$
+\pi_t(x_t) = \frac{g(y_t | x_t) \int_{\mathcal{X}} f(x_t | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1}}{\int_{\mathcal{X}} g(y_t | x_t') \int_{\mathcal{X}} f(x_t' | x_{t-1}) \, \pi_{t-1}(x_{t-1}) \, dx_{t-1} \, dx_t'}
+$$
 
 或等价地写为比例形式：
 
-$$\pi_t(x_t) \propto g(y_t | x_t) \int_{\mathcal{X}} f(x_t | x_{t-1}) \, d\Pi_{t-1}(x_{t-1})$$
+$$
+\pi_t(x_t) \propto g(y_t | x_t) \int_{\mathcal{X}} f(x_t | x_{t-1}) \, d\Pi_{t-1}(x_{t-1})
+$$
 
 **注记：** 对于一般非线性非高斯系统，上述积分无解析解，这构成了粒子滤波方法的理论基础。
 
@@ -123,23 +150,31 @@ $$\pi_t(x_t) \propto g(y_t | x_t) \int_{\mathcal{X}} f(x_t | x_{t-1}) \, d\Pi_{t
 
 **定义 3.1（重要性采样）** 设目标分布密度为 $\pi(x)$，提议分布密度为 $q(x)$，且 $\text{supp}(\pi) \subseteq \text{supp}(q)$。对于可积函数 $\varphi: \mathcal{X} \to \mathbb{R}$，期望值可表示为：
 
-$$\mathbb{E}_\pi[\varphi(X)] = \int \varphi(x) \pi(x) dx = \int \varphi(x) \frac{\pi(x)}{q(x)} q(x) dx = \mathbb{E}_q\left[\varphi(X) \cdot w(X)\right]$$
+$$
+\mathbb{E}_\pi[\varphi(X)] = \int \varphi(x) \pi(x) dx = \int \varphi(x) \frac{\pi(x)}{q(x)} q(x) dx = \mathbb{E}_q\left[\varphi(X) \cdot w(X)\right]
+$$
 
 其中 **非归一化重要性权重** 定义为：
 
-$$w(x) := \frac{\pi(x)}{q(x)}$$
+$$
+w(x) := \frac{\pi(x)}{q(x)}
+$$
 
 **定理 3.1（重要性采样估计量）** 设 $\{X^i\}_{i=1}^N \stackrel{i.i.d.}{\sim} q(x)$，则：
 
 **非归一化估计量：** 若 $\pi(x)$ 已知至归一化常数，即 $\pi(x) = \tilde{\pi}(x)/Z$，则：
 
-$$\hat{\varphi}_N^{\text{IS}} = \frac{1}{N} \sum_{i=1}^N \varphi(X^i) \tilde{w}(X^i), \quad \tilde{w}(x) = \frac{\tilde{\pi}(x)}{q(x)}$$
+$$
+\hat{\varphi}_N^{\text{IS}} = \frac{1}{N} \sum_{i=1}^N \varphi(X^i) \tilde{w}(X^i), \quad \tilde{w}(x) = \frac{\tilde{\pi}(x)}{q(x)}
+$$
 
 为 $Z \cdot \mathbb{E}_\pi[\varphi]$ 的无偏估计量。
 
-**自归一化估计量：** 
+**自归一化估计量：**
 
-$$\hat{\varphi}_N^{\text{SIS}} = \frac{\sum_{i=1}^N \varphi(X^i) \tilde{w}(X^i)}{\sum_{i=1}^N \tilde{w}(X^i)} = \sum_{i=1}^N \varphi(X^i) W^i$$
+$$
+\hat{\varphi}_N^{\text{SIS}} = \frac{\sum_{i=1}^N \varphi(X^i) \tilde{w}(X^i)}{\sum_{i=1}^N \tilde{w}(X^i)} = \sum_{i=1}^N \varphi(X^i) W^i
+$$
 
 其中归一化权重 $W^i = \tilde{w}(X^i) / \sum_{j=1}^N \tilde{w}(X^j)$。
 
@@ -149,15 +184,20 @@ $$\hat{\varphi}_N^{\text{SIS}} = \frac{\sum_{i=1}^N \varphi(X^i) \tilde{w}(X^i)}
 
 **定义 3.2（有效样本量）** 有效样本量（ESS）定义为：
 
-$$N_{\text{eff}} := \frac{1}{\sum_{i=1}^N (W^i)^2} = \frac{\left(\sum_{i=1}^N w^i\right)^2}{\sum_{i=1}^N (w^i)^2}$$
+$$
+N_{\text{eff}} := \frac{1}{\sum_{i=1}^N (W^i)^2} = \frac{\left(\sum_{i=1}^N w^i\right)^2}{\sum_{i=1}^N (w^i)^2}
+$$
 
 **性质：** $1 \leq N_{\text{eff}} \leq N$，其中：
+
 - $N_{\text{eff}} = 1$ 当且仅当某个 $W^i = 1$（完全退化）
 - $N_{\text{eff}} = N$ 当且仅当所有 $W^i = 1/N$（均匀权重）
 
 **定理 3.2（权重退化）** 在序贯重要性采样中，设各时刻权重独立同分布且具有有限方差。则权重的变异系数随时间指数增长：
 
-$$\text{CV}^2(w_t) := \frac{\text{Var}(w_t)}{[\mathbb{E}(w_t)]^2} = O(e^{ct})$$
+$$
+\text{CV}^2(w_t) := \frac{\text{Var}(w_t)}{[\mathbb{E}(w_t)]^2} = O(e^{ct})
+$$
 
 其中 $c > 0$ 为某常数。
 
@@ -169,22 +209,30 @@ $$\text{CV}^2(w_t) := \frac{\text{Var}(w_t)}{[\mathbb{E}(w_t)]^2} = O(e^{ct})$$
 
 **定理 4.1（SIS权重递推公式）** 设提议分布具有分解形式：
 
-$$q(x_{0:t} | y_{1:t}) = q(x_0 | y_1) \prod_{s=1}^{t} q(x_s | x_{0:s-1}, y_{1:s})$$
+$$
+q(x_{0:t} | y_{1:t}) = q(x_0 | y_1) \prod_{s=1}^{t} q(x_s | x_{0:s-1}, y_{1:s})
+$$
 
 则重要性权重可递推计算。定义非归一化权重：
 
-$$\tilde{w}_t := \frac{p(x_{0:t} | y_{1:t})}{q(x_{0:t} | y_{1:t})} \propto \frac{p(x_{0:t}, y_{1:t})}{q(x_{0:t} | y_{1:t})}$$
+$$
+\tilde{w}_t := \frac{p(x_{0:t} | y_{1:t})}{q(x_{0:t} | y_{1:t})} \propto \frac{p(x_{0:t}, y_{1:t})}{q(x_{0:t} | y_{1:t})}
+$$
 
-**推导：** 
+**推导：**
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 \tilde{w}_t &\propto \frac{\mu(x_0) \prod_{s=1}^{t} f(x_s | x_{s-1}) \prod_{s=1}^{t} g(y_s | x_s)}{q(x_0 | y_1) \prod_{s=1}^{t} q(x_s | x_{0:s-1}, y_{1:s})} \\
 &= \tilde{w}_{t-1} \cdot \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{q(x_t | x_{0:t-1}, y_{1:t})}
-\end{aligned}$$
+\end{aligned}
+$$
 
 定义**增量权重**：
 
-$$\alpha_t(x_{t-1}, x_t) := \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{q(x_t | x_{0:t-1}, y_{1:t})}$$
+$$
+\alpha_t(x_{t-1}, x_t) := \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{q(x_t | x_{0:t-1}, y_{1:t})}
+$$
 
 则有递推关系：$\tilde{w}_t = \tilde{w}_{t-1} \cdot \alpha_t$。
 
@@ -194,7 +242,9 @@ $$\alpha_t(x_{t-1}, x_t) := \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{q(x_t | x_{0
 
 **推论 4.1** 在Bootstrap提议下，增量权重简化为：
 
-$$\alpha_t = \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{f(x_t | x_{t-1})} = g(y_t | x_t)$$
+$$
+\alpha_t = \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{f(x_t | x_{t-1})} = g(y_t | x_t)
+$$
 
 因此权重更新为：$\tilde{w}_t = \tilde{w}_{t-1} \cdot g(y_t | x_t)$。
 
@@ -202,17 +252,25 @@ $$\alpha_t = \frac{f(x_t | x_{t-1}) \, g(y_t | x_t)}{f(x_t | x_{t-1})} = g(y_t |
 
 **定义 4.2（多项式重采样）** 给定加权粒子集 $\{(X^i, W^i)\}_{i=1}^N$，多项式重采样生成新粒子集 $\{\tilde{X}^i\}_{i=1}^N$，其中：
 
-$$\tilde{X}^i \stackrel{i.i.d.}{\sim} \sum_{j=1}^N W^j \delta_{X^j}(\cdot)$$
+$$
+\tilde{X}^i \stackrel{i.i.d.}{\sim} \sum_{j=1}^N W^j \delta_{X^j}(\cdot)
+$$
 
 等价地，$\mathbb{P}(\tilde{X}^i = X^j) = W^j$。
 
 **定理 4.2（重采样的无偏性）** 设 $\varphi: \mathcal{X} \to \mathbb{R}$ 为可测函数，$N^j$ 为粒子 $X^j$ 被选中的次数。则：
 
-$$\mathbb{E}\left[\frac{1}{N} \sum_{i=1}^N \varphi(\tilde{X}^i) \Big| \{X^j, W^j\}_{j=1}^N\right] = \sum_{j=1}^N W^j \varphi(X^j)$$
+$$
+\mathbb{E}\left[\frac{1}{N} \sum_{i=1}^N \varphi(\tilde{X}^i) \Big| \{X^j, W^j\}_{j=1}^N\right] = \sum_{j=1}^N W^j \varphi(X^j)
+$$
 
 **证明：** 由于 $\sum_{i=1}^N \varphi(\tilde{X}^i) = \sum_{j=1}^N N^j \varphi(X^j)$，且 $\mathbb{E}[N^j | \{X^k, W^k\}] = N \cdot W^j$，故：
 
-$$\mathbb{E}\left[\frac{1}{N} \sum_{j=1}^N N^j \varphi(X^j)\right] = \frac{1}{N} \sum_{j=1}^N N W^j \varphi(X^j) = \sum_{j=1}^N W^j \varphi(X^j)$$ $\square$
+$$
+\mathbb{E}\left[\frac{1}{N} \sum_{j=1}^N N^j \varphi(X^j)\right] = \frac{1}{N} \sum_{j=1}^N N W^j \varphi(X^j) = \sum_{j=1}^N W^j \varphi(X^j)
+$$
+
+$\square$
 
 ### 4.4 系统重采样算法
 
@@ -229,7 +287,9 @@ $$\mathbb{E}\left[\frac{1}{N} \sum_{j=1}^N N^j \varphi(X^j)\right] = \frac{1}{N}
 
 **定理 4.3（系统重采样的方差缩减）** 设 $N^j$ 为粒子 $j$ 被选中的次数。对于系统重采样：
 
-$$\text{Var}(N^j) \leq N W^j (1 - W^j) - W^j (1 - W^j)$$
+$$
+\text{Var}(N^j) \leq N W^j (1 - W^j) - W^j (1 - W^j)
+$$
 
 相比多项式重采样的方差 $N W^j (1 - W^j)$ 严格更小。
 
@@ -243,25 +303,33 @@ $$\text{Var}(N^j) \leq N W^j (1 - W^j) - W^j (1 - W^j)$$
 
 **定义 5.1（扩展目标分布）** 设时刻 $t$ 的粒子近似为：
 
-$$\hat{\pi}_t(x_t) = \sum_{k=1}^N w_t^k \delta_{x_t^k}(x_t), \quad \sum_{k=1}^N w_t^k = 1$$
+$$
+\hat{\pi}_t(x_t) = \sum_{k=1}^N w_t^k \delta_{x_t^k}(x_t), \quad \sum_{k=1}^N w_t^k = 1
+$$
 
 定义时刻 $t+1$ 的联合目标分布：
 
-$$p(x_{t+1}, k | y_{1:t+1}) \propto g(y_{t+1} | x_{t+1}) \, f(x_{t+1} | x_t^k) \, w_t^k$$
+$$
+p(x_{t+1}, k | y_{1:t+1}) \propto g(y_{t+1} | x_{t+1}) \, f(x_{t+1} | x_t^k) \, w_t^k
+$$
 
 **定理 5.1（边缘化恢复滤波分布）** 对 $k$ 求和得到：
 
-$$p(x_{t+1} | y_{1:t+1}) = \sum_{k=1}^N p(x_{t+1}, k | y_{1:t+1})$$
+$$
+p(x_{t+1} | y_{1:t+1}) = \sum_{k=1}^N p(x_{t+1}, k | y_{1:t+1})
+$$
 
 **证明：** 由联合分布定义：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 \sum_{k=1}^N p(x_{t+1}, k | y_{1:t+1}) &\propto \sum_{k=1}^N g(y_{t+1} | x_{t+1}) \, f(x_{t+1} | x_t^k) \, w_t^k \\
 &= g(y_{t+1} | x_{t+1}) \sum_{k=1}^N f(x_{t+1} | x_t^k) \, w_t^k \\
 &\approx g(y_{t+1} | x_{t+1}) \int f(x_{t+1} | x_t) \, d\hat{\Pi}_t(x_t) \\
 &\approx g(y_{t+1} | x_{t+1}) \, \pi_{t+1|t}(x_{t+1}) \\
 &\propto \pi_{t+1}(x_{t+1})
-\end{aligned}$$
+\end{aligned}
+$$
 
 因此，从联合分布采样后丢弃 $k$，即可得到滤波分布的样本。 $\square$
 
@@ -269,11 +337,15 @@ $$\begin{aligned}
 
 **定义 5.2（APF提议分布）** 构造提议分布：
 
-$$q(x_{t+1}, k | y_{1:t+1}) = q(k | y_{1:t+1}) \cdot q(x_{t+1} | k, y_{1:t+1})$$
+$$
+q(x_{t+1}, k | y_{1:t+1}) = q(k | y_{1:t+1}) \cdot q(x_{t+1} | k, y_{1:t+1})
+$$
 
 Pitt与Shephard提出的标准选择为：
 
-$$q(x_{t+1}, k | y_{1:t+1}) \propto g(y_{t+1} | \mu_{t+1}^k) \, f(x_{t+1} | x_t^k) \, w_t^k$$
+$$
+q(x_{t+1}, k | y_{1:t+1}) \propto g(y_{t+1} | \mu_{t+1}^k) \, f(x_{t+1} | x_t^k) \, w_t^k
+$$
 
 其中 $\mu_{t+1}^k$ 为转移分布 $f(\cdot | x_t^k)$ 的**特征值**。
 
@@ -289,25 +361,33 @@ $$q(x_{t+1}, k | y_{1:t+1}) \propto g(y_{t+1} | \mu_{t+1}^k) \, f(x_{t+1} | x_t^
 
 **定理 5.2（提议分布的分解）** APF提议分布可分解为：
 
-$$q(x_{t+1}, k | y_{1:t+1}) = q(k | y_{1:t+1}) \cdot q(x_{t+1} | k)$$
+$$
+q(x_{t+1}, k | y_{1:t+1}) = q(k | y_{1:t+1}) \cdot q(x_{t+1} | k)
+$$
 
 其中：
 
 **第一阶段（索引选择）：**
 
-$$q(k | y_{1:t+1}) = \frac{g(y_{t+1} | \mu_{t+1}^k) \, w_t^k \cdot \int f(x_{t+1} | x_t^k) dx_{t+1}}{\sum_{j=1}^N g(y_{t+1} | \mu_{t+1}^j) \, w_t^j} = \frac{g(y_{t+1} | \mu_{t+1}^k) \, w_t^k}{\sum_{j=1}^N g(y_{t+1} | \mu_{t+1}^j) \, w_t^j}$$
+$$
+q(k | y_{1:t+1}) = \frac{g(y_{t+1} | \mu_{t+1}^k) \, w_t^k \cdot \int f(x_{t+1} | x_t^k) dx_{t+1}}{\sum_{j=1}^N g(y_{t+1} | \mu_{t+1}^j) \, w_t^j} = \frac{g(y_{t+1} | \mu_{t+1}^k) \, w_t^k}{\sum_{j=1}^N g(y_{t+1} | \mu_{t+1}^j) \, w_t^j}
+$$
 
 **第二阶段（状态采样）：**
 
-$$q(x_{t+1} | k) = f(x_{t+1} | x_t^k)$$
+$$
+q(x_{t+1} | k) = f(x_{t+1} | x_t^k)
+$$
 
 **证明：** 对提议分布关于 $x_{t+1}$ 积分：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 q(k | y_{1:t+1}) &= \int q(x_{t+1}, k | y_{1:t+1}) \, dx_{t+1} \\
 &\propto g(y_{t+1} | \mu_{t+1}^k) \, w_t^k \int f(x_{t+1} | x_t^k) \, dx_{t+1} \\
 &= g(y_{t+1} | \mu_{t+1}^k) \, w_t^k
-\end{aligned}$$
+\end{aligned}
+$$
 
 注意 $g(y_{t+1} | \mu_{t+1}^k)$ 不依赖于 $x_{t+1}$，可提至积分外，而 $\int f(x_{t+1} | x_t^k) dx_{t+1} = 1$。 $\square$
 
@@ -315,11 +395,15 @@ q(k | y_{1:t+1}) &= \int q(x_{t+1}, k | y_{1:t+1}) \, dx_{t+1} \\
 
 **定义 5.4（第一阶段权重）** 定义非归一化第一阶段权重：
 
-$$\tilde{\lambda}_k := g(y_{t+1} | \mu_{t+1}^k) \, w_t^k$$
+$$
+\tilde{\lambda}_k := g(y_{t+1} | \mu_{t+1}^k) \, w_t^k
+$$
 
 归一化第一阶段权重：
 
-$$\lambda_k := \frac{\tilde{\lambda}_k}{\sum_{j=1}^N \tilde{\lambda}_j} = \frac{g(y_{t+1} | \mu_{t+1}^k) \, w_t^k}{\sum_{j=1}^N g(y_{t+1} | \mu_{t+1}^j) \, w_t^j}$$
+$$
+\lambda_k := \frac{\tilde{\lambda}_k}{\sum_{j=1}^N \tilde{\lambda}_j} = \frac{g(y_{t+1} | \mu_{t+1}^k) \, w_t^k}{\sum_{j=1}^N g(y_{t+1} | \mu_{t+1}^j) \, w_t^j}
+$$
 
 **物理解释：** $\lambda_k$ 反映粒子 $x_t^k$ 的"适应度"——综合考虑其当前权重 $w_t^k$ 与预测状态对新观测的兼容性 $g(y_{t+1} | \mu_{t+1}^k)$。
 
@@ -327,22 +411,32 @@ $$\lambda_k := \frac{\tilde{\lambda}_k}{\sum_{j=1}^N \tilde{\lambda}_j} = \frac{
 
 **定理 5.3（APF重要性权重）** 从提议分布 $q(x_{t+1}, k | y_{1:t+1})$ 采样得到 $(x_{t+1}^r, k^r)$，$r = 1, \ldots, R$，则重要性权重为：
 
-$$w^r = \frac{p(x_{t+1}^r, k^r | y_{1:t+1})}{q(x_{t+1}^r, k^r | y_{1:t+1})}$$
+$$
+w^r = \frac{p(x_{t+1}^r, k^r | y_{1:t+1})}{q(x_{t+1}^r, k^r | y_{1:t+1})}
+$$
 
 **完整推导：**
 
 分子（目标分布）：
-$$p(x_{t+1}^r, k^r | y_{1:t+1}) \propto g(y_{t+1} | x_{t+1}^r) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}$$
+
+$$
+p(x_{t+1}^r, k^r | y_{1:t+1}) \propto g(y_{t+1} | x_{t+1}^r) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}
+$$
 
 分母（提议分布）：
-$$q(x_{t+1}^r, k^r | y_{1:t+1}) \propto g(y_{t+1} | \mu_{t+1}^{k^r}) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}$$
+
+$$
+q(x_{t+1}^r, k^r | y_{1:t+1}) \propto g(y_{t+1} | \mu_{t+1}^{k^r}) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}
+$$
 
 取比值：
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 w^r &= \frac{g(y_{t+1} | x_{t+1}^r) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}}{g(y_{t+1} | \mu_{t+1}^{k^r}) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}} \\
 &= \frac{g(y_{t+1} | x_{t+1}^r)}{g(y_{t+1} | \mu_{t+1}^{k^r})}
-\end{aligned}$$
+\end{aligned}
+$$
 
 **关键观察：** 转移密度 $f(x_{t+1}^r | x_t^{k^r})$ 与前一时刻权重 $w_t^{k^r}$ 在分子分母中相消，第二阶段权重仅为似然比。
 
@@ -353,6 +447,7 @@ w^r &= \frac{g(y_{t+1} | x_{t+1}^r) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}}{g(
 **方案A（联合采样）：** 直接从 $q(x_{t+1}, k | y_{1:t+1})$ 联合采样
 
 **方案B（两阶段采样）：**
+
 1. 从 $q(k | y_{1:t+1}) = \text{Categorical}(\lambda_1, \ldots, \lambda_N)$ 采样索引 $k$
 2. 从 $q(x_{t+1} | k) = f(x_{t+1} | x_t^k)$ 采样状态 $x_{t+1}$
 
@@ -369,29 +464,36 @@ w^r &= \frac{g(y_{t+1} | x_{t+1}^r) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}}{g(
 **输入：** 初始分布 $\mu(x_0)$，转移密度 $f$，观测似然 $g$，观测序列 $\{y_t\}_{t=1}^T$，粒子数 $N$
 
 **初始化（$t = 0$）：**
+
 - 对 $i = 1, \ldots, N$：采样 $x_0^i \sim \mu(x_0)$
 - 设置均匀权重：$w_0^i = 1/N$
 
 **对每个时刻 $t = 1, \ldots, T$：**
 
 **步骤1：计算特征值**
+
 - 对 $k = 1, \ldots, N$：计算 $\mu_t^k = \mathbb{E}[X_t | X_{t-1} = x_{t-1}^k]$（或其他特征值）
 
 **步骤2：第一阶段加权**
+
 - 对 $k = 1, \ldots, N$：计算 $\tilde{\lambda}_k = g(y_t | \mu_t^k) \cdot w_{t-1}^k$
 - 归一化：$\lambda_k = \tilde{\lambda}_k / \sum_{j=1}^N \tilde{\lambda}_j$
 
 **步骤3：索引重采样**
+
 - 对 $r = 1, \ldots, N$：采样 $k^r \sim \text{Categorical}(\lambda_1, \ldots, \lambda_N)$
 
 **步骤4：状态传播**
+
 - 对 $r = 1, \ldots, N$：采样 $x_t^r \sim f(\cdot | x_{t-1}^{k^r})$
 
 **步骤5：第二阶段加权**
+
 - 对 $r = 1, \ldots, N$：计算 $\tilde{w}_t^r = g(y_t | x_t^r) / g(y_t | \mu_t^{k^r})$
 - 归一化：$w_t^r = \tilde{w}_t^r / \sum_{j=1}^N \tilde{w}_t^j$
 
 **步骤6（可选）：自适应重采样**
+
 - 计算 $N_{\text{eff}} = 1 / \sum_{r=1}^N (w_t^r)^2$
 - 若 $N_{\text{eff}} < N/2$：执行重采样，重置 $w_t^r = 1/N$
 
@@ -401,11 +503,15 @@ w^r &= \frac{g(y_{t+1} | x_{t+1}^r) \, f(x_{t+1}^r | x_t^{k^r}) \, w_t^{k^r}}{g(
 
 **定理 6.1（边缘似然的无偏估计）** APF提供边缘似然 $p(y_t | y_{1:t-1})$ 的无偏估计：
 
-$$\hat{p}(y_t | y_{1:t-1}) = \left(\frac{1}{N} \sum_{k=1}^N \tilde{\lambda}_k\right) \cdot \left(\frac{1}{N} \sum_{r=1}^N \tilde{w}_t^r\right)$$
+$$
+\hat{p}(y_t | y_{1:t-1}) = \left(\frac{1}{N} \sum_{k=1}^N \tilde{\lambda}_k\right) \cdot \left(\frac{1}{N} \sum_{r=1}^N \tilde{w}_t^r\right)
+$$
 
 或等价地：
 
-$$\hat{p}(y_t | y_{1:t-1}) = \frac{1}{N} \sum_{k=1}^N g(y_t | \mu_t^k) \, w_{t-1}^k \cdot \frac{1}{N} \sum_{r=1}^N \frac{g(y_t | x_t^r)}{g(y_t | \mu_t^{k^r})}$$
+$$
+\hat{p}(y_t | y_{1:t-1}) = \frac{1}{N} \sum_{k=1}^N g(y_t | \mu_t^k) \, w_{t-1}^k \cdot \frac{1}{N} \sum_{r=1}^N \frac{g(y_t | x_t^r)}{g(y_t | \mu_t^{k^r})}
+$$
 
 ---
 
@@ -415,17 +521,23 @@ $$\hat{p}(y_t | y_{1:t-1}) = \frac{1}{N} \sum_{k=1}^N g(y_t | \mu_t^k) \, w_{t-1
 
 **定理 7.1（强大数律）** 设 $\varphi: \mathcal{X} \to \mathbb{R}$ 为有界可测函数。对于APF估计量：
 
-$$\hat{\varphi}_t^N := \sum_{i=1}^N w_t^i \, \varphi(x_t^i)$$
+$$
+\hat{\varphi}_t^N := \sum_{i=1}^N w_t^i \, \varphi(x_t^i)
+$$
 
 在适当的正则性条件下，当 $N \to \infty$ 时：
 
-$$\hat{\varphi}_t^N \xrightarrow{a.s.} \mathbb{E}_{\pi_t}[\varphi(X_t)] = \int \varphi(x) \, \pi_t(x) \, dx$$
+$$
+\hat{\varphi}_t^N \xrightarrow{a.s.} \mathbb{E}_{\pi_t}[\varphi(X_t)] = \int \varphi(x) \, \pi_t(x) \, dx
+$$
 
 ### 7.2 中心极限定理
 
 **定理 7.2（渐近正态性）** 在正则性条件下，APF估计量满足中心极限定理：
 
-$$\sqrt{N}\left(\hat{\varphi}_t^N - \mathbb{E}_{\pi_t}[\varphi]\right) \xrightarrow{d} \mathcal{N}(0, \sigma_t^2(\varphi))$$
+$$
+\sqrt{N}\left(\hat{\varphi}_t^N - \mathbb{E}_{\pi_t}[\varphi]\right) \xrightarrow{d} \mathcal{N}(0, \sigma_t^2(\varphi))
+$$
 
 其中渐近方差 $\sigma_t^2(\varphi)$ 依赖于重采样方案与提议分布的选择。
 
@@ -433,11 +545,13 @@ $$\sqrt{N}\left(\hat{\varphi}_t^N - \mathbb{E}_{\pi_t}[\varphi]\right) \xrightar
 
 **定理 7.3（APF的修正目标分布）** Johansen与Doucet（2008）证明APF可解释为针对以下修正分布的标准SISR算法：
 
-$$\tilde{\pi}_t(x_{1:t}) \propto p(x_{1:t} | y_{1:t}) \cdot \hat{p}(y_{t+1} | x_t)$$
+$$
+\tilde{\pi}_t(x_{1:t}) \propto p(x_{1:t} | y_{1:t}) \cdot \hat{p}(y_{t+1} | x_t)
+$$
 
 其中 $\hat{p}(y_{t+1} | x_t) = g(y_{t+1} | \mu_{t+1}(x_t))$ 为近似预测似然。
 
-**重要推论：** 
+**重要推论：**
 
 1. APF目标与标准滤波目标 $p(x_{1:t} | y_{1:t})$ 存在差异
 2. "完美自适应"（使用精确预测似然）不能保证方差降低
@@ -447,7 +561,9 @@ $$\tilde{\pi}_t(x_{1:t}) \propto p(x_{1:t} | y_{1:t}) \cdot \hat{p}(y_{t+1} | x_
 
 **命题 7.1（权重有界性）** 为保证APF估计量的有限方差，需满足：
 
-$$\sup_{x_{t+1}} \frac{g(y_{t+1} | x_{t+1})}{g(y_{t+1} | \mu_{t+1}^k)} < \infty$$
+$$
+\sup_{x_{t+1}} \frac{g(y_{t+1} | x_{t+1})}{g(y_{t+1} | \mu_{t+1}^k)} < \infty
+$$
 
 **注记：** 当使用众数作为 $\mu_{t+1}^k$ 时，若似然函数在众数处取得最大值，则上述条件自动满足。使用均值时需额外验证。
 
@@ -459,11 +575,15 @@ $$\sup_{x_{t+1}} \frac{g(y_{t+1} | x_{t+1})}{g(y_{t+1} | \mu_{t+1}^k)} < \infty$
 
 **定理 8.1（效率提升条件）** 记标准SIR权重方差为 $\text{Var}_{\text{SIR}}$，APF权重方差为 $\text{Var}_{\text{APF}}$。APF优于SIR当且仅当：
 
-$$\text{Var}_{\text{APF}} < \text{Var}_{\text{SIR}}$$
+$$
+\text{Var}_{\text{APF}} < \text{Var}_{\text{SIR}}
+$$
 
 Pitt与Shephard给出的充分条件为：
 
-$$\sum_{k=1}^N \lambda_k \, \mathbb{E}\left[\left(\frac{g(y_{t+1}|X_{t+1})}{g(y_{t+1}|\mu_{t+1}^k)}\right)^2 \Big| K = k\right] < N \sum_{k=1}^N \lambda_k^2 \, \mathbb{E}\left[\left(\frac{g(y_{t+1}|X_{t+1})}{g(y_{t+1}|\mu_{t+1}^k)}\right)^2 \Big| K = k\right]$$
+$$
+\sum_{k=1}^N \lambda_k \, \mathbb{E}\left[\left(\frac{g(y_{t+1}|X_{t+1})}{g(y_{t+1}|\mu_{t+1}^k)}\right)^2 \Big| K = k\right] < N \sum_{k=1}^N \lambda_k^2 \, \mathbb{E}\left[\left(\frac{g(y_{t+1}|X_{t+1})}{g(y_{t+1}|\mu_{t+1}^k)}\right)^2 \Big| K = k\right]
+$$
 
 ### 8.2 计算复杂度分析
 
@@ -483,7 +603,9 @@ APF的额外开销为特征值计算 $O(N \cdot C_\mu)$ 与第一阶段似然评
 
 **定义 9.1（OAPF目标函数）** Branchini与Elvira（2021）将APF第一阶段权重选择表述为优化问题：
 
-$$\min_{\boldsymbol{\lambda} \geq 0} \, D_\chi^2\left(\sum_{k=1}^N \lambda_k \, f(\cdot | x_t^k) \, \Big\| \, \pi_{t+1|t}(\cdot)\right)$$
+$$
+\min_{\boldsymbol{\lambda} \geq 0} \, D_\chi^2\left(\sum_{k=1}^N \lambda_k \, f(\cdot | x_t^k) \, \Big\| \, \pi_{t+1|t}(\cdot)\right)
+$$
 
 其中 $D_\chi^2$ 为卡方散度。
 
@@ -491,9 +613,11 @@ $$\min_{\boldsymbol{\lambda} \geq 0} \, D_\chi^2\left(\sum_{k=1}^N \lambda_k \, 
 
 **定义 9.2（条件线性结构）** 设状态分解为 $x_t = (x_t^{(1)}, x_t^{(2)})$，其中给定 $x_t^{(1)}$ 条件下，$x_t^{(2)}$ 满足线性高斯动态。Rao-Blackwellized APF仅对 $x_t^{(1)}$ 维护粒子，而 $x_t^{(2)}$ 通过Kalman滤波解析处理。
 
-**定理 9.1（Rao-Blackwell方差缩减）** 
+**定理 9.1（Rao-Blackwell方差缩减）**
 
-$$\text{Var}\left[\mathbb{E}[\varphi | x^{(1)}]\right] \leq \text{Var}[\varphi]$$
+$$
+\text{Var}\left[\mathbb{E}[\varphi | x^{(1)}]\right] \leq \text{Var}[\varphi]
+$$
 
 等号当且仅当 $\varphi$ 仅依赖于 $x^{(1)}$ 时成立。
 
@@ -517,17 +641,10 @@ $$\text{Var}\left[\mathbb{E}[\varphi | x^{(1)}]\right] \leq \text{Var}[\varphi]$
 ## 参考文献
 
 1. Pitt, M. K., & Shephard, N. (1999). Filtering via simulation: Auxiliary particle filters. *Journal of the American Statistical Association*, 94(446), 590-599.
-
 2. Gordon, N. J., Salmond, D. J., & Smith, A. F. (1993). Novel approach to nonlinear/non-Gaussian Bayesian state estimation. *IEE Proceedings F*, 140(2), 107-113.
-
 3. Johansen, A. M., & Doucet, A. (2008). A note on auxiliary particle filters. *Statistics & Probability Letters*, 78(12), 1498-1504.
-
 4. Doucet, A., de Freitas, N., & Gordon, N. (Eds.). (2001). *Sequential Monte Carlo Methods in Practice*. Springer.
-
 5. Cappé, O., Moulines, E., & Rydén, T. (2005). *Inference in Hidden Markov Models*. Springer.
-
 6. Del Moral, P. (2004). *Feynman-Kac Formulae: Genealogical and Interacting Particle Systems with Applications*. Springer.
-
 7. Chopin, N., & Papaspiliopoulos, O. (2020). *An Introduction to Sequential Monte Carlo*. Springer.
-
 8. Branchini, N., & Elvira, V. (2021). Optimized auxiliary particle filters. *Proceedings of UAI*, 1289-1299.

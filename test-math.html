@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学公式测试</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .formula-test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>数学公式显示测试</h1>
+    
+    <div class="formula-test">
+        <h2>辅助粒子滤波公式测试</h2>
+        <p>Rao-Blackwell定理：</p>
+        $$\delta_{RB}(X) = E[\delta(X) | T(X)]$$
+        
+        <p>方差缩减：</p>
+        $$E[(\delta(X) - \theta)^2] - E[(\delta_{RB}(X) - \theta)^2] = E[\text{Var}(\delta(X) | T(X))]$$
+        
+        <p>全方差分解：</p>
+        $$\text{Var}(Y) = E[\text{Var}(Y|X)] + \text{Var}(E[Y|X])$$
+    </div>
+    
+    <div class="formula-test">
+        <h2>RBPF公式测试</h2>
+        <p>状态空间模型：</p>
+        $$x_t = f(x_{t-1}) + v_t, \quad v_t \sim \mathcal{N}(0, Q_t^x)$$
+        
+        $$z_t = A_t(x_t)z_{t-1} + B_t(x_t) + w_t, \quad w_t \sim \mathcal{N}(0, Q_t^z)$$
+        
+        <p>联合后验分解：</p>
+        $$p(x_{0:t}, z_{0:t} | y_{1:t}) = \underbrace{p(z_{0:t} | x_{0:t}, y_{1:t})}_{\text{高斯分布}} \times \underbrace{p(x_{0:t} | y_{1:t})}_{\text{非高斯分布}}$$
+    </div>
+    
+    <div class="formula-test">
+        <h2>SuperPoint公式测试</h2>
+        <p>描述子归一化：</p>
+        $$\mathbf{d}_i = \frac{f(\mathbf{p}_i)}{||f(\mathbf{p}_i)||_2}$$
+        
+        <p>匹配分数：</p>
+        $$\mathbf{S}_{ij} = \langle \mathbf{d}_i^A, \mathbf{d}_j^B \rangle$$
+    </div>
+    
+    <div class="formula-test">
+        <h2>热冲击公式测试</h2>
+        <p>热传导方程：</p>
+        $$\rho c_p \frac{\partial T}{\partial t} = \nabla \cdot (k \nabla T) + Q$$
+        
+        <p>热应力：</p>
+        $$\sigma_{th} = \frac{E \alpha \Delta T}{1 - \nu}$$
+    </div>
+</body>
+</html>
