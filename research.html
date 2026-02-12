@@ -3,21 +3,34 @@ layout: default
 title: 研究工作
 ---
 
+<!-- 页面头部区域：标题和描述 -->
 <div class="page-header">
   <div class="hero-tag">RESEARCH</div>
   <h1>研究工作</h1>
   <p>学术论文、研究提案与政策分析，聚焦于岩石力学、教育技术与区域政策研究。</p>
 </div>
 
+<!-- 研究论文列表容器 -->
 <div class="listing-grid">
+  <!-- 时间轴布局：按时间顺序展示研究论文 -->
   <div class="timeline">
+    <!-- 获取所有论文并按日期降序排列（最新的在前） -->
     {% assign sorted_papers = site.papers | sort: 'date' | reverse %}
+    <!-- 条件判断：仅当存在论文时才渲染列表 -->
+    {% if sorted_papers.size > 0 %}
+    <!-- 遍历每篇论文 -->
     {% for paper in sorted_papers %}
+    <!-- 时间轴条目：链接到具体论文详情页 -->
     <a href="{{ paper.url | relative_url }}" class="timeline-item reveal">
+      <!-- 发表日期：格式化为 YYYY-MM -->
       <div class="timeline-date">{{ paper.date | date: "%Y-%m" }}</div>
+      <!-- 论文标题 -->
       <div class="timeline-title">{{ paper.title }}</div>
+      <!-- 发表场所：期刊或会议名称 -->
       <div class="timeline-venue">{{ paper.venue }}</div>
+      <!-- 论文描述：简短摘要 -->
       <div class="timeline-desc">{{ paper.description }}</div>
+      <!-- 论文标签：研究关键词或主题 -->
       {% if paper.tags %}
       <div class="card-techs" style="margin-top: 0.8rem;">
         {% for tag in paper.tags %}
@@ -27,5 +40,13 @@ title: 研究工作
       {% endif %}
     </a>
     {% endfor %}
+    <!-- 空状态处理：当没有论文时显示友好的提示信息 -->
+    {% else %}
+    <div class="empty-state reveal">
+      <div class="empty-icon">📚</div>
+      <h3>暂无研究论文</h3>
+      <p>研究内容正在整理中，敬请期待...</p>
+    </div>
+    {% endif %}
   </div>
 </div>

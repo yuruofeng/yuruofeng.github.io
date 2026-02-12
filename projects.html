@@ -3,32 +3,46 @@ layout: default
 title: 开源项目
 ---
 
+<!-- 页面头部区域：标题和描述 -->
 <div class="page-header">
   <div class="hero-tag">PROJECTS</div>
   <h1>开源项目</h1>
   <p>个人开发的工具、框架与应用，覆盖 AI Agent、计算机视觉、内容分析等方向。</p>
 </div>
 
+<!-- 项目列表容器 -->
 <div class="listing-grid">
   <div class="card-grid">
+    <!-- 遍历所有项目：按日期降序排列（最新的在前） -->
     {% assign sorted_projects = site.projects | sort: 'date' | reverse %}
     {% for proj in sorted_projects %}
+    <!-- 项目卡片：使用代码编辑器风格的设计 -->
     <a href="{{ proj.url | relative_url }}" class="code-card reveal">
+      <!-- 卡片头部：模拟代码编辑器窗口标题栏 -->
       <div class="code-card-header">
         <div class="code-card-dots"><span></span><span></span><span></span></div>
+        <!-- 文件名显示：从 front matter 的 repo_name 或 slug 读取 -->
         <div class="code-card-filename">{{ proj.repo_name | default: proj.slug }}/</div>
       </div>
+      <!-- 卡片主体：项目详细信息 -->
       <div class="code-card-body">
+        <!-- 分类标签：项目所属类别 -->
         <div class="card-tag">{{ proj.category }}</div>
+        <!-- 项目标题 -->
         <div class="card-title">{{ proj.title }}</div>
+        <!-- 项目描述 -->
         <div class="card-desc">{{ proj.description }}</div>
+        <!-- 技术标签：显示相关技术栈 -->
         <div class="card-techs">
           {% for tag in proj.tags %}
           <span class="tech-tag">{{ tag }}</span>
           {% endfor %}
         </div>
+        <!-- 项目统计信息：编程语言和许可证 -->
         <div class="code-card-stats">
+          <!-- 语言指示器：使用 lang_class 决定颜色点样式，默认为 python -->
           <div class="code-stat"><span class="dot dot-{{ proj.lang_class | default: 'python' }}"></span> {{ proj.language }}</div>
+          <!-- 许可证信息：从 front matter 读取，默认为 MIT -->
           <div class="code-stat">📄 {{ proj.license | default: "MIT" }}</div>
         </div>
       </div>

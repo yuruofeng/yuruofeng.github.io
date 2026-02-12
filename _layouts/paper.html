@@ -1,18 +1,27 @@
 ---
+# 使用默认布局作为基础
 layout: default
 ---
+<!-- 学术论文详情页容器 -->
 <div class="article-container">
+  <!-- 返回研究列表的链接 -->
   <a href="{{ '/research/' | relative_url }}" class="back-link">← 返回研究列表</a>
 
+  <!-- 文章主体内容 -->
   <article>
+    <!-- 文章元数据区域：包含会议/期刊类型、标题、年份、作者和发表场所 -->
     <div class="article-meta">
+      <!-- 发表场所类型标签：如 Conference、Journal 等，默认显示 Research -->
       <div class="card-tag">{{ page.venue_type | default: "Research" }}</div>
+      <!-- 论文标题 -->
       <h1>{{ page.title }}</h1>
+      <!-- 论文附加信息：发表年份、作者列表、发表场所 -->
       <div class="article-meta-info">
         <span>📅 {{ page.date | date: "%Y" }}</span>
         {% if page.authors %}<span>✍️ {{ page.authors | join: ", " }}</span>{% endif %}
         {% if page.venue %}<span>📖 {{ page.venue }}</span>{% endif %}
       </div>
+      <!-- 论文资源链接区域：PDF、DOI 和代码仓库 -->
       {% if page.pdf_url or page.doi or page.code_url %}
       <div class="paper-links">
         {% if page.pdf_url %}<a href="{{ page.pdf_url }}" class="btn" target="_blank">📄 PDF</a>{% endif %}
@@ -22,6 +31,7 @@ layout: default
       {% endif %}
     </div>
 
+    <!-- 文章正文内容 -->
     <div class="article-content">
       {{ content }}
     </div>

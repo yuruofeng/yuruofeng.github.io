@@ -3,34 +3,48 @@ layout: default
 title: 技术笔记
 ---
 
+<!-- 页面头部区域：标题和描述 -->
 <div class="page-header">
   <div class="hero-tag">TECHNICAL NOTES</div>
   <h1>技术笔记</h1>
   <p>系统化的技术学习记录，涵盖计算机视觉、工程实践、AI 框架开发等领域。</p>
 </div>
 
-<!-- Tag Filter -->
+<!-- 标签筛选栏：动态生成分类筛选按钮 -->
 <div class="filter-bar">
+  <!-- 全部筛选按钮：默认激活状态 -->
   <button class="filter-btn active" data-filter="all">ALL</button>
+  <!-- 动态生成分类筛选按钮：遍历所有笔记提取唯一分类 -->
   {% assign all_categories = "" %}
   {% for note in site.notes %}
     {% unless all_categories contains note.category %}
+      <!-- 将新分类添加到字符串中，用于去重 -->
       {% assign all_categories = all_categories | append: note.category | append: "," %}
+      <!-- 为每个分类生成一个筛选按钮 -->
       <button class="filter-btn" data-filter="{{ note.category }}">{{ note.category }}</button>
     {% endunless %}
   {% endfor %}
 </div>
 
+<!-- 笔记卡片列表区 -->
 <div class="listing-grid">
   <div class="card-grid">
+    <!-- 遍历所有笔记：按日期降序排列（最新的在前） -->
     {% assign sorted_notes = site.notes | sort: 'date' | reverse %}
     {% for note in sorted_notes %}
+    <!-- 笔记卡片：链接到具体笔记详情页，data-tags 属性用于前端筛选 -->
     <a href="{{ note.url | relative_url }}" class="card reveal" data-tags="{{ note.category }}">
+      <!-- 卡片图标：从 front matter 读取，默认为 📝 -->
       <div class="card-icon">{{ note.icon | default: "📝" }}</div>
+      <!-- 分类标签：显示笔记所属分类 -->
       <div class="card-tag">{{ note.category }}</div>
+      <!-- 卡片标题：笔记的主标题 -->
       <div class="card-title">{{ note.title }}</div>
+      <!-- 发布日期：格式化为 YYYY-MM-DD -->
       <div class="card-date">{{ note.date | date: "%Y-%m-%d" }}</div>
+      <!-- 描述信息：简短描述，从 front matter 读取 -->
       <div class="card-desc">{{ note.description }}</div>
+      <!-- 技术标签：显示相关技术栈或关键词 -->
       <div class="card-techs">
         {% for tag in note.tags %}
         <span class="tech-tag">{{ tag }}</span>

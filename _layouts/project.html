@@ -1,18 +1,27 @@
 ---
+# 使用默认布局作为基础
 layout: default
 ---
+<!-- 项目详情页容器 -->
 <div class="article-container">
+  <!-- 返回项目列表的链接 -->
   <a href="{{ '/projects/' | relative_url }}" class="back-link">← 返回项目列表</a>
 
+  <!-- 文章主体内容 -->
   <article>
+    <!-- 文章元数据区域：包含分类、标题、语言、许可证和状态 -->
     <div class="article-meta">
+      <!-- 项目分类标签 -->
       <div class="card-tag">{{ page.category }}</div>
+      <!-- 项目标题 -->
       <h1>{{ page.title }}</h1>
+      <!-- 项目附加信息：编程语言、许可证、状态 -->
       <div class="article-meta-info">
         {% if page.language %}<span>💻 {{ page.language }}</span>{% endif %}
         {% if page.license %}<span>📄 {{ page.license }}</span>{% endif %}
         {% if page.status %}<span>🚀 {{ page.status }}</span>{% endif %}
       </div>
+      <!-- 项目链接区域：GitHub仓库和在线演示 -->
       {% if page.github_url %}
       <div class="paper-links">
         <a href="{{ page.github_url }}" class="btn btn-filled" target="_blank">⌘ View on GitHub</a>
@@ -21,6 +30,7 @@ layout: default
       {% endif %}
     </div>
 
+    <!-- 文章正文内容 -->
     <div class="article-content">
       {{ content }}
     </div>

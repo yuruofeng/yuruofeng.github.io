@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<!-- 包含网站头部元数据：字符编码、视口设置、样式表、SEO 标签等 -->
 {% include head.html %}
 </head>
 <body>
 
+<!-- 背景网格效果层：创建科技感的网格背景 -->
 <div class="grid-bg"></div>
+<!-- 扫描线效果层：模拟老式 CRT 显示器的扫描线效果 -->
 <div class="scanline"></div>
+<!-- 粒子动画容器：用于动态粒子背景效果，JavaScript 将在此处生成粒子 -->
 <div class="particles" id="particles"></div>
 
+<!-- 导航栏组件：包含网站主菜单和导航链接 -->
 {% include nav.html %}
 
+<!-- 页面主要内容区域：由具体页面模板填充 -->
 {{ content }}
 
+<!-- 页脚组件：包含版权信息、社交链接等 -->
 {% include footer.html %}
 
+<!-- 主要 JavaScript 文件：处理交互逻辑、动画效果、粒子系统等 -->
 <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
 </body>
 </html>

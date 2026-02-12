@@ -2,17 +2,24 @@
 layout: default
 ---
 <div class="article-container">
+  <!-- 返回笔记列表的链接 -->
   <a href="{{ '/notes/' | relative_url }}" class="back-link">← 返回笔记列表</a>
 
+  <!-- 文章主体内容 -->
   <article>
+    <!-- 文章元数据区域：包含分类、标题、日期、作者、标签 -->
     <div class="article-meta">
+      <!-- 笔记分类标签 -->
       <div class="card-tag">{{ page.category }}</div>
+      <!-- 笔记标题 -->
       <h1>{{ page.title }}</h1>
+      <!-- 笔记附加信息：发布日期、作者、标签列表 -->
       <div class="article-meta-info">
         <span>📅 {{ page.date | date: "%Y-%m-%d" }}</span>
         {% if page.author %}<span>✍️ {{ page.author }}</span>{% endif %}
         {% if page.tags %}<span>🏷️ {{ page.tags | join: ", " }}</span>{% endif %}
       </div>
+      <!-- 标签可视化列表：以标签云形式展示所有标签 -->
       {% if page.tags %}
       <div class="card-techs" style="margin-top: 1rem;">
         {% for tag in page.tags %}
@@ -22,6 +29,8 @@ layout: default
       {% endif %}
     </div>
 
+    <!-- 目录导航：仅在页面设置 toc: true 时显示 -->
+    <!-- 使用 Jekyll 的 markdownify 和 toc_only 过滤器生成目录 -->
     {% if page.toc %}
     <div class="toc">
       <div class="toc-title">目录</div>
@@ -29,6 +38,7 @@ layout: default
     </div>
     {% endif %}
 
+    <!-- 文章正文内容：渲染 Markdown 内容 -->
     <div class="article-content">
       {{ content }}
     </div>
